@@ -12,9 +12,15 @@ Funcionalidade: robolek trata links
 		E que os seguintes links existem no banco de dados:
 		| url					  | date       |
 		| http://www.example.com/ | 2013-10-03 |
-		Então devo pegar os links do banco de dados
+		Quando pego os links do banco de dados
 		E devo ter "http://www.example.com/" na lista
 		E Limpa banco de dados
 		
-	Cenário:
+	Cenário: Crawl os links carregados do banco de dados
+		Dado que inicio o robolek
+		E que os seguintes links existem no banco de dados:
+		| url					  | date       |
+		| http://www.example.com/ | 2013-10-03 |
+		Então extraio os links de cada site na lista
+		E salvo os links extraidos no banco de dados
 		

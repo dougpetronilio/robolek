@@ -8,7 +8,7 @@ Dado(/^que os seguintes links existem no banco de dados:$/) do |table|
   end
 end
 
-Então(/^devo pegar os links do banco de dados$/) do
+Quando(/^pego os links do banco de dados$/) do
   @links = @robolek.lista_de_links
 end
 
@@ -18,4 +18,12 @@ end
 
 Então(/^Limpa banco de dados$/) do
   @robolek.clean_db
+end
+
+Então(/^extraio os links de cada site na lista$/) do
+  @robolek.crawl
+end
+
+Então(/^salvo os links extraidos no banco de dados$/) do
+  pending # express the regexp above with the code you wish you had
 end

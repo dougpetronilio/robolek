@@ -2,11 +2,12 @@ source "https://rubygems.org"
 
 gem "bson_ext"
 gem "rake"
+gem "nokogiri"
 
 group :test do
   gem "cucumber"
   gem "rspec"
-  gem "fakeweb"
+  gem "webmock"
   gem "simplecov"
   gem "simplecov-rcov"
 end
