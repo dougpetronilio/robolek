@@ -3,7 +3,7 @@ require "spec_helper"
 module RoboLek
   
   class StubPage
-    include WebMock
+    include WebMock::API
         
     attr_accessor :links, :hrefs, :body, :nome, :dominio
     

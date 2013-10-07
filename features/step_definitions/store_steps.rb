@@ -5,6 +5,7 @@ end
 Dado(/^que os seguintes links existem no banco de dados:$/) do |table|
   table.hashes.each do |line|
     @robolek.insert({:url => line['url']})
+    cria_mock(line['url'], ['teste1', 'teste2'])
   end
 end
 
@@ -25,5 +26,5 @@ Então(/^extraio os links de cada site na lista$/) do
 end
 
 Então(/^salvo os links extraidos no banco de dados$/) do
-  pending # express the regexp above with the code you wish you had
+  @robolek.salva_links
 end

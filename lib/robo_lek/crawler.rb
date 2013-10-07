@@ -7,12 +7,12 @@ module RoboLek
   end
 
   class Crawler
-    attr_reader :lista_de_links, :links_extraidos
+    attr_reader :lista_de_links, :paginas_extraidas
     
     def initialize(db, count)
       @db_mongo = db
       @lista_de_links = carrega_lista_de_links(count)
-      @links_extraidos = extrai_links
+      @paginas_extraidas = []
     end
     
     def self.start(db, count)
@@ -27,20 +27,28 @@ module RoboLek
       @db_mongo.clean
     end
     
+    def crawl
+      @paginas_extraidas = extrai_paginas
+    end
+    
+    def salva_links
+      @paginas_extraidas.each do |pagina|
+        @db_mongo.save(pagina.links)
+      end
+    end
+    
     private
     def carrega_lista_de_links(count)
       @db_mongo.links(count) || []
     end
     
-    def extrai_links
-      @links_extraidos = []
+    def extrai_paginas
       if @lista_de_links
         @lista_de_links.each do |link|
-          extraidos = TrataLink.trata_pagina(link)
-          extraidos.each { |l| @links_extraidos << l} if extraidos
+          @paginas_extraidas << TrataLink.trata_pagina(link['url'])
         end
       end
-      @links_extraidos
+      @paginas_extraidas
     end
   end
 end

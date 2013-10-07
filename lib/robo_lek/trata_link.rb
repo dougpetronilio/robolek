@@ -4,6 +4,8 @@ require 'nokogiri'
 module RoboLek
   class TrataLink
     
+    attr_reader :code, :body, :links, :pagina
+    
     def initialize(link)
       @url = link
       @code = ""
@@ -43,8 +45,8 @@ module RoboLek
       doc.search("//a[@href]").each do |a|
         u = a['href']
         next if u.nil? or u.empty?
-        abs = URI.join( @url, u ).to_s rescue next
-        links << abs if in_domain?(abs)
+        absolute = URI.join( @url, u ).to_s rescue next
+        links << absolute if in_domain?(absolute)
       end
       links.uniq!
       links

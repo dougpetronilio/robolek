@@ -26,6 +26,10 @@ module RoboLek
       @colecao.insert(valor)
     end
     
+    def save(links)
+      links.each { |url| @colecao.insert({:url => url, :date_saved => Time.now}) } if links
+    end
+    
     def close
       @db_mongo.connection.close
     end
