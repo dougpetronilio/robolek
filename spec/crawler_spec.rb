@@ -60,11 +60,12 @@ module RoboLek
         pages = []
         pages << StubPage.new(dominio, "", :links => ['teste1', 'teste2'])
         
-        pagina.stub(links: pages[0].links_url)
+        pagina.stub(links: pages[0].links_url, code: 200)
         
         db.should_receive(:links).with(1).and_return([{"url" => dominio}])
+        
         pages.each { |page| TrataLink.should_receive(:trata_pagina).with(dominio).and_return(pagina) }
-        pages.each { |page| db.should_receive(:save).with(page.links_url) }
+        pages.each { |page| db.should_receive(:save).with(pagina.links) }
 
         @robo = RoboLek.start(db, 1)
         @robo.crawl

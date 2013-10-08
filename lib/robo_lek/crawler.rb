@@ -33,7 +33,7 @@ module RoboLek
     
     def salva_links
       @paginas_extraidas.each do |pagina|
-        @db_mongo.save(pagina.links)
+        @db_mongo.save(pagina.links) if pagina.code == 200
       end
     end
     
