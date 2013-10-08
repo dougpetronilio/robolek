@@ -12,6 +12,8 @@ module RoboLek
       @links = [opcoes[:links]].flatten if opcoes.has_key?(:links)
       @hrefs = [opcoes[:hrefs]].flatten if opcoes.has_key?(:hrefs)
       @body = opcoes[:body]
+      @code = 200
+      @code = opcoes[:code] if opcoes.has_key?(:code)
       @dominio = dominio
       
       cria_body unless @body
@@ -37,9 +39,9 @@ module RoboLek
     end
     
     def cria_stub
-      options = {:body => @body, :content_type => "text/html", :status => [200, "OK"]}
+      options = {:body => @body, :content_type => "text/html", :status => [@code, "OK"]}
       
-      stub_request(:get, @dominio + @nome).with(:headers => {'Accept'=>'*/*', 'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3', 'Host'=>'www.teste.com', 'User-Agent'=>'Ruby'}).to_return(options)
+      stub_request(:get, @dominio + @nome).with(:headers => {'Accept'=>'*/*', 'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3', 'User-Agent'=>'Ruby'}).to_return(options)
     end
   end
 end
