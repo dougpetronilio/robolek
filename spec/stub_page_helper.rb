@@ -17,7 +17,14 @@ module RoboLek
       @dominio = dominio
       
       cria_body unless @body
-      cria_stub
+      
+      WebMock.disable_net_connect!
+      if (300..307).include?(@code)
+        @redirecionamento = opcoes[:redirecionamento] if opcoes.has_key?(:redirecionamento)
+        cria_stub_redirecionamento
+      else
+        cria_stub
+      end
     end
     
     def links_url
@@ -42,6 +49,10 @@ module RoboLek
       options = {:body => @body, :content_type => "text/html", :status => [@code, "OK"]}
       
       stub_request(:get, @dominio + @nome).with(:headers => {'Accept'=>'*/*', 'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3', 'User-Agent'=>'Ruby'}).to_return(options)
+    end
+    
+    def cria_stub_redirecionamento
+      stub_request(:get, @dominio + "").to_return(:status => [@code, "Permanently Moved"], :headers => {:location => @redirecionamento})
     end
   end
 end

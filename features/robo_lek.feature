@@ -35,6 +35,16 @@ Funcionalidade: robolek trata links
 		Então devo retornar uma pagina com erro
 		E Limpa banco de dados
 		
+	Cenário: Crawl link com redirecionamento
+		Dado que inicio o robolek
+		E que os seguintes links com redireciomento para "http://www.teste.com/teste" existem no banco de dados:
+		| url                   | date       |
+		| http://www.teste.com/ | 2013-10-03 |
+		Quando extraio os links de cada site na lista
+		Então devo ser redirecionado para o site destino "http://www.teste.com/teste"
+		E salvo os links extraidos no banco de dados
+		Então links devem estar no banco de dados
+		E Limpa banco de dados
 		
 		
 	

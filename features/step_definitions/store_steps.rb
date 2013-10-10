@@ -16,6 +16,13 @@ Dado(/^que os seguintes links errados existem no banco de dados:$/) do |table|
   end
 end
 
+Dado(/^que os seguintes links com redireciomento para "(.*?)" existem no banco de dados:$/) do |arg1, table|
+  table.hashes.each do |line|
+    @robolek.insert({:url => line['url']})
+    cria_mock_redirecionamento(line['url'], [], 302, arg1)
+  end
+end
+
 Quando(/^pego os links do banco de dados$/) do
   @links = @robolek.lista_de_links
 end
@@ -44,7 +51,12 @@ end
 
 Então(/^devo retornar uma pagina com erro$/) do
   @links_extraidos.each do |pagina_erro| 
-    pagina_erro.code.should == "400"
+    pagina_erro.code.to_i.should be_between(400, 417)
     pagina_erro.links.should == []
   end
+end
+
+Então(/^devo ser redirecionado para o site destino "(.*?)"$/) do |arg1|
+  @links_extraidos.first.pagina.code.to_i.should be_between(200, 306)
+  @links_extraidos.first.pagina.dominio.should == arg1
 end

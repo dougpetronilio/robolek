@@ -12,7 +12,7 @@ module RoboLek
       @body = ""
       @links = []
       extrai_links(link)
-      @pagina = Pagina.new(link, @code, @body, @links)
+      @pagina = Pagina.new(@url, @code, @body, @links)
     end
     
     def self.trata_pagina(link)
@@ -23,19 +23,31 @@ module RoboLek
     def extrai_links(link)
       links = []
       pagina = {}
-      request = abre_pagina(link)
-      @code = request.code
+      response = abre_pagina(link)
+      @code = response.code
       
-      case @code
-      when "200"
-        @body = request.body
+      case @code.to_i
+      when (200..206)
+        @body = response.body
         @links = pega_links
+      when (300..307)
+        @url = response['location']
+        response = abre_pagina(@url)
+        @code = response.code
+        if (200..206).include?(@code.to_i)
+          @body = response.body
+          @links = pega_links
+        end
+      when (400..417)
+        STDOUT.puts "Erro na requisição"
+      when (500..505)
+        STDOUT.puts "Erro no servidor"
       end
     end
     
     def abre_pagina(link)
       uri = URI(link)
-      request = Net::HTTP.get_response(uri)
+      response = Net::HTTP.get_response(uri)
     end
     
     def pega_links
