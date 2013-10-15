@@ -9,7 +9,7 @@ module RoboLek
     end
     
     it "should return RoboLek::Crawler instance" do
-      robolek = RoboLek.start(db)
+      robolek = RoboLek.start(db, deep: 0)
       robolek.should be_an_instance_of(RoboLek::Crawler)
     end
   end

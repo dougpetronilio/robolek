@@ -50,7 +50,7 @@ module RoboLek
         
         @robo = RoboLek.start(db, 1)
         @robo.crawl
-        @robo.paginas_extraidas.length.should == 2
+        @robo.paginas_extraidas.length.should == 1
       end
     end
     
@@ -60,7 +60,7 @@ module RoboLek
         pages = []
         pages << StubPage.new(dominio, "", :links => ['teste1', 'teste2'])
         
-        pagina.stub(links: pages[0].links_url, code: 200)
+        pagina.stub(links: pages[0].links_url, code: "200")
         
         db.should_receive(:links).with(1).and_return([{"url" => dominio}])
         
@@ -71,6 +71,26 @@ module RoboLek
         @robo.crawl
         @robo.salva_links
       end
+    end
+    
+    context "#loop_crawl" do
+      it "should return links use deep 2 for crawl" do
+        dominio = "http://www.teste.com/"
+        pages = []
+        pages << StubPage.new(dominio, "", :links => ['teste1', 'teste2'])
+        pages << StubPage.new("#{dominio}teste1", "", :links => ['/teste3'])
+        pages << StubPage.new("#{dominio}teste2", "", :links => [])
+
+        db.should_receive(:links).with(100).and_return([{"url" => dominio}])
+        
+        @robo = RoboLek.start(db)
+        
+        pagina.stub(links: pages[0].links_url, code: "200")
+        TrataLink.should_receive(:trata_pagina).with(pages[0].dominio).and_return(pagina)
+        db.should_receive(:save).with(pages[0].links_url)
+        @robo.loop_crawl(:next)
+      end
+      
     end
   end
 end

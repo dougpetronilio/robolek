@@ -6,7 +6,7 @@ include WebMock::API
 def cria_mock(url, links, code)
   options = {:body => cria_body(url, links), :content_type => "text/html", :status => [code, "OK"]}
   
-  stub_request(:get, url + "").with(:headers => {'Accept'=>'*/*', 'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3', 'User-Agent'=>'Ruby'}).to_return(options)
+  stub_request(:get, url + "").with(:headers => {'Accept'=>'*/*', 'User-Agent'=>'Ruby'}).to_return(options)
 end
 
 def cria_mock_redirecionamento(url, links, code = 302, redirecionamento)

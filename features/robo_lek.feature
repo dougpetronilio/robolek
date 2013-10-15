@@ -15,16 +15,19 @@ Funcionalidade: robolek trata links
 		Quando pego os links do banco de dados
 		Então devo ter "http://www.teste.com/" na lista
 		E Limpa banco de dados
-		
+	
+	@wip	
 	Cenário: Crawl os links carregados do banco de dados são tratados e é extraído os links das paginas
 		Dado que inicio o robolek
-		E que os seguintes links corretos existem no banco de dados:
+		E que os seguintes links corretos existem no banco de dados para robo:
 		| url				    | date       |
 		| http://www.teste.com/ | 2013-10-03 |
-		Quando extraio os links de cada site na lista
+		Quando inicio o loop do robo
 		E salvo os links extraidos no banco de dados
+		Quando pego os links do banco de dados
 		Então links devem estar no banco de dados
 		E Limpa banco de dados
+
 		
 	Cenário: Crawl link que não existe
 		Dado que inicio o robolek
@@ -43,8 +46,10 @@ Funcionalidade: robolek trata links
 		Quando extraio os links de cada site na lista
 		Então devo ser redirecionado para o site destino "http://www.teste.com/teste"
 		E salvo os links extraidos no banco de dados
+		Quando pego os links do banco de dados
 		Então links devem estar no banco de dados
 		E Limpa banco de dados
+		
 		
 		
 	

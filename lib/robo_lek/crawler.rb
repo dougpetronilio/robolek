@@ -11,8 +11,10 @@ module RoboLek
     
     def initialize(db, count)
       @db_mongo = db
-      @lista_de_links = carrega_lista_de_links(count)
+      @count = count
+      @lista_de_links = carrega_lista_de_links(@count)
       @paginas_extraidas = []
+      
     end
     
     def self.start(db, count)
@@ -33,7 +35,16 @@ module RoboLek
     
     def salva_links
       @paginas_extraidas.each do |pagina|
-        @db_mongo.save(pagina.links) if pagina.code == 200
+        @db_mongo.save(pagina.links) if pagina.code == "200"
+      end
+      @lista_de_links = carrega_lista_de_links(@count)
+    end
+    
+    def loop_crawl(sinal = :next)
+      if sinal == :next
+        crawl
+        salva_links
+        @paginas_extraidas = []
       end
     end
     
@@ -48,6 +59,7 @@ module RoboLek
           @paginas_extraidas << TrataLink.trata_pagina(link['url'])
         end
       end
+      @paginas_extraidas.uniq!
       @paginas_extraidas
     end
   end

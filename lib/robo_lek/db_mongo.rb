@@ -15,19 +15,29 @@ module RoboLek
       @links = []
       @db_mongo = db_mongo
       @colecao = @db_mongo['paginas']
-      @colecao.create_index "url"
+      @colecao.ensure_index(:url, :unique => true)
+     
     end
     
     def links(count)
-      @links = @colecao.find().limit(count)
+      @links = @colecao.find({}, :sort => ["date_saved", "desc"]).limit(count)
     end
     
     def insert(valor)
-      @colecao.insert(valor)
+      begin
+        @colecao.insert(valor)
+      rescue
+      end
     end
     
     def save(links)
-      links.each { |url| @colecao.insert({:url => url, :date_saved => Time.now}) } if links
+      links.each do |url| 
+        begin
+          @colecao.insert({:url => url, :date_saved => Time.now})
+        rescue Mongo::OperationFailure => e
+           #STDOUT.puts "[save] -- #{e.message}"
+        end
+      end if links
     end
     
     def close
