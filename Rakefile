@@ -12,6 +12,7 @@ task :default => :cucumber
 desc "Run spec"
 RSpec::Core::RakeTask.new do |t|
   t.pattern = './spec/**/*_spec.rb'
+  t.rspec_opts = ['-cfs --backtrace']
 end
 
 desc "Run cucumber"

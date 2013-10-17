@@ -16,7 +16,6 @@ Funcionalidade: robolek trata links
 		Então devo ter "http://www.teste.com/" na lista
 		E Limpa banco de dados
 	
-	@wip	
 	Cenário: Crawl os links carregados do banco de dados são tratados e é extraído os links das paginas
 		Dado que inicio o robolek
 		E que os seguintes links corretos existem no banco de dados para robo:
@@ -49,7 +48,6 @@ Funcionalidade: robolek trata links
 		Quando pego os links do banco de dados
 		Então links devem estar no banco de dados
 		E Limpa banco de dados
-		
 		
 		
 	

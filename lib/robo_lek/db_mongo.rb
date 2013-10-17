@@ -26,7 +26,7 @@ module RoboLek
     def insert(valor)
       begin
         @colecao.insert(valor)
-      rescue
+      rescue Mongo::OperationFailure => e
       end
     end
     
@@ -35,7 +35,9 @@ module RoboLek
         begin
           @colecao.insert({:url => url, :date_saved => Time.now})
         rescue Mongo::OperationFailure => e
-           #STDOUT.puts "[save] -- #{e.message}"
+           #puts "[find] #{@colecao.find({:url => url}).to_a}"
+           @colecao.update({:url => url}, {"$set" => {:date_saved => Time.now}})
+           #puts "[update] #{@colecao.find({:url => url}).to_a}"
         end
       end if links
     end

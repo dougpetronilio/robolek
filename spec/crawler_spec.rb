@@ -11,6 +11,7 @@ module RoboLek
       it "should have links in list when start robolek" do
         dominio = "http://www.teste.com/"
         db.should_receive(:links).with(1).and_return([{"url" => dominio}])
+        
         TrataLink.should_receive(:trata_pagina).with(dominio)
         
         @robo = RoboLek.start(db, 1)

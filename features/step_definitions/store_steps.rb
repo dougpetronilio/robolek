@@ -43,6 +43,7 @@ Dado(/^que os seguintes links com redireciomento para "(.*?)" existem no banco d
 end
 
 Quando(/^pego os links do banco de dados$/) do
+  @robolek.crawl
   @links = @robolek.lista_de_links
 end
 

@@ -3,16 +3,24 @@
 $:.unshift File.join(File.dirname(__FILE__), "..", "lib") 
 
 require "robo_lek"
+require "benchmark"
 
 robolek = RoboLek.start
 
 robolek.insert({:url => "http://www.netshoes.com.br/"})
 
-robolek.crawl
-robolek.salva_links
 contador = 0
-robolek.paginas_extraidas.each do |pagina| 
-  puts pagina.links
+Benchmark.bm do |x|
+  x.report("while") do
+    while(contador <= 4)
+      puts "contador = #{contador}"
+      Benchmark.bm do |x|
+        x.report("loop_crawl") {robolek.loop_crawl(:next)}
+      end
+      contador += 1
+    end
+  end
+  
 end
 
-puts robolek.paginas_extraidas[0].links.length
+robolek.close_db

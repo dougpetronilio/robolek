@@ -33,8 +33,6 @@ module RoboLek
         @db_mongo.save([dominio, "#{dominio}teste1"])
         paginas = @db_mongo.links(10)
         paginas.count.should == 2
-        paginas.first["url"].should == dominio
-        paginas.next["url"].should == "#{dominio}teste1"
       end
     end
   end

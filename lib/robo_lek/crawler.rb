@@ -1,24 +1,28 @@
+require "thread"
+
 module RoboLek
   
   VERSION = '0.0.1';
   
-  def RoboLek.start(db = RoboLek.DBMongo, count = 100)
-    Crawler.start(db, count)
+  def RoboLek.start(db = RoboLek.DBMongo, count = 100, threads = 5)
+    Crawler.start(db, count, threads)
   end
 
   class Crawler
     attr_reader :lista_de_links, :paginas_extraidas
     
-    def initialize(db, count)
+    def initialize(db, count, threads_count)
       @db_mongo = db
       @count = count
-      @lista_de_links = carrega_lista_de_links(@count)
+      @threads = []
+      @threads_count = threads_count
+      @lista_de_links = []
+      @queue_links = Queue.new
       @paginas_extraidas = []
-      
     end
     
-    def self.start(db, count)
-      self.new(db, count)
+    def self.start(db, count, threads)
+      self.new(db, count, threads)
     end
     
     def insert(valor)
@@ -30,6 +34,7 @@ module RoboLek
     end
     
     def crawl
+      carrega_lista_de_links(@count)
       @paginas_extraidas = extrai_paginas
     end
     
@@ -37,7 +42,6 @@ module RoboLek
       @paginas_extraidas.each do |pagina|
         @db_mongo.save(pagina.links) if pagina.code == "200"
       end
-      @lista_de_links = carrega_lista_de_links(@count)
     end
     
     def loop_crawl(sinal = :next)
@@ -48,17 +52,37 @@ module RoboLek
       end
     end
     
+    def close_db
+      @db_mongo.close
+    end
+    
     private
     def carrega_lista_de_links(count)
-      @db_mongo.links(count) || []
+      @lista_de_links = []
+      @queue_links = Queue.new
+      
+      links = @db_mongo.links(count) || []
+      links.each do |link| 
+        @lista_de_links << link
+        @queue_links << link
+      end
+
     end
     
     def extrai_paginas
-      if @lista_de_links
-        @lista_de_links.each do |link|
-          @paginas_extraidas << TrataLink.trata_pagina(link['url'])
+      @threads_count.times do
+        @threads << Thread.new {Tentaculo.new(@queue_links, @paginas_extraidas).run}
+      end
+      
+      loop do
+        if @queue_links.empty?
+          @threads.size.times {@queue_links << :FIM}
+          break
         end
       end
+      
+      @threads.each {|thread| thread.join}
+      
       @paginas_extraidas.uniq!
       @paginas_extraidas
     end
