@@ -44,7 +44,7 @@ end
 
 Quando(/^pego os links do banco de dados$/) do
   @robolek.crawl
-  @links = @robolek.lista_de_links
+  @links = @robolek.all_links
 end
 
 Então(/^devo ter "(.*?)" na lista$/) do |arg1|
@@ -71,7 +71,7 @@ Então(/^links devem estar no banco de dados$/) do
   end if @links
   lista_de_links_banco_ordenada = lista_de_links_banco_ordenada.sort
   lista_de_links_nas_paginas_ordenada = @lista_de_links_nas_paginas.sort
-  #STDOUT.puts "#{lista_de_links_banco_ordenada} == #{lista_de_links_nas_paginas_ordenada}"
+  STDOUT.puts "#{lista_de_links_banco_ordenada} == #{lista_de_links_nas_paginas_ordenada}"
   lista_de_links_nas_paginas_ordenada.should == lista_de_links_banco_ordenada
 end
 

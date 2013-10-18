@@ -1,10 +1,12 @@
 require "thread"
+require "robotex"
+require "benchmark"
 
 module RoboLek
   
   VERSION = '0.0.1';
   
-  def RoboLek.start(db = RoboLek.DBMongo, count = 100, threads = 5)
+  def RoboLek.start(db = RoboLek.DBMongo, count = 100, threads = 60)
     Crawler.start(db, count, threads)
   end
 
@@ -19,6 +21,11 @@ module RoboLek
       @lista_de_links = []
       @queue_links = Queue.new
       @paginas_extraidas = []
+      @robotex = Robotex.new("RoboYep")
+    end
+    
+    def fim?
+      @db_mongo.todos_crawled?
     end
     
     def self.start(db, count, threads)
@@ -40,15 +47,23 @@ module RoboLek
     
     def salva_links
       @paginas_extraidas.each do |pagina|
-        @db_mongo.save(pagina.links) if pagina.code == "200"
+        @db_mongo.save(pagina.links, pagina.url) if pagina.code == "200"
       end
     end
     
     def loop_crawl(sinal = :next)
       if sinal == :next
-        crawl
-        salva_links
+        puts ""
+        puts "#"*70
+        Benchmark.bm do |x|
+          x.report("crawl") { crawl }
+        end
+        Benchmark.bm do |x|
+          x.report("salva_links") { salva_links }
+        end
         @paginas_extraidas = []
+        puts ""
+        puts "#"*70
       end
     end
     
@@ -56,20 +71,36 @@ module RoboLek
       @db_mongo.close
     end
     
+    def all_links
+      @db_mongo.all_links(@count).to_a
+    end
+    
     private
     def carrega_lista_de_links(count)
       @lista_de_links = []
       @queue_links = Queue.new
       
-      links = @db_mongo.links(count) || []
+      links = @db_mongo.links(count)
+      
       links.each do |link| 
-        @lista_de_links << link
-        @queue_links << link
+        if link_liberado?(link['url'])
+          @lista_de_links << link
+          @queue_links << link
+        end
       end
-
+    end
+    
+    def link_liberado?(link)
+      ret = false
+      uri_encode = URI.encode(link)
+      uri = URI.parse(uri_encode)
+      ret = @robotex.allowed?(uri)
+      return ret
     end
     
     def extrai_paginas
+      @threads = []
+      
       @threads_count.times do
         @threads << Thread.new {Tentaculo.new(@queue_links, @paginas_extraidas).run}
       end

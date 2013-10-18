@@ -34,6 +34,7 @@ module RoboLek
           resultado << "#{@dominio}#{link}"
         end
       end
+      resultado << @dominio
       resultado
     end
     
@@ -48,6 +49,7 @@ module RoboLek
     def cria_stub
       options = {:body => @body, :content_type => "text/html", :status => [@code, "OK"]}
       
+      stub_request(:get, "#{@dominio}robots.txt").with(:headers => {'Accept'=>'*/*', 'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3', 'User-Agent'=>'RoboYep'}).to_return({:body=> "User-agent: * \n Allow: */*", :content_type => "text", :status => [@code, "OK"]})
       stub_request(:get, @dominio + @nome).with(:headers => {'Accept'=>'*/*', 'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3', 'User-Agent'=>'Ruby'}).to_return(options)
     end
     

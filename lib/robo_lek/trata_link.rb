@@ -4,7 +4,7 @@ require 'nokogiri'
 module RoboLek
   class TrataLink
     
-    attr_reader :code, :body, :links, :pagina
+    attr_reader :code, :body, :links, :pagina, :url
     
     def initialize(link)
       @url = link
@@ -46,7 +46,8 @@ module RoboLek
     end
     
     def abre_pagina(link)
-      uri = URI(link)
+      uri_encode = URI.encode(link)
+      uri = URI.parse(uri_encode)
       response = Net::HTTP.get_response(uri)
     end
     
@@ -60,6 +61,7 @@ module RoboLek
         absolute = URI.join( @url, u ).to_s rescue next
         links << absolute if in_domain?(absolute)
       end
+      links << @url
       links.uniq!
       links
     end

@@ -31,7 +31,7 @@ module RoboLek
       it "should pagina.links length be 2" do
         Pagina.should_receive(:new).with(DOMINIO, "200", @page.body, @page.links_url)
         trata_link = TrataLink.trata_pagina(DOMINIO)
-        trata_link.links.length.should == 2
+        trata_link.links.length.should == 3
       end
       
       it "should code error and links length be 0" do
@@ -44,7 +44,7 @@ module RoboLek
       it "should redirect to link and extract links" do
         Pagina.should_receive(:new).with(DOMINIO, "200", @page.body, @page.links_url)
         trata_link = TrataLink.trata_pagina(DOMINIO_REDIRECIONAMENTO)
-        trata_link.links.length.should == 2
+        trata_link.links.length.should == 3
       end
     end
   end
