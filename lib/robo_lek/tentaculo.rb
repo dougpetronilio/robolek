@@ -15,9 +15,9 @@ module RoboLek
         break if link == :FIM
         
         if produto
-          @pages << TrataLink.trata_pagina(link['url'], produto)
+          @pages << TrataLink.trata_pagina(link['url'], link['robots'] , produto)
         else
-          @pages << TrataLink.trata_pagina(link['url'])
+          @pages << TrataLink.trata_pagina(link['url'], link['robots'])
         end
       end
     end

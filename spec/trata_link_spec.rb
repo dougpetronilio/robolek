@@ -17,12 +17,12 @@ module RoboLek
     context "#new" do
       it "should tratalink create a page" do
         Pagina.should_receive(:new).with(DOMINIO, "200", @page.body, @page.links_url, nil, [])
-        TrataLink.trata_pagina(DOMINIO, nil)
+        TrataLink.trata_pagina(DOMINIO, "#{DOMINIO}robots.txt", nil)
       end
       
       it "should complete page with body, code and links" do
          Pagina.should_receive(:new).with(DOMINIO, "200", @page.body, @page.links_url, nil, [])
-         trata_link = TrataLink.trata_pagina(DOMINIO, nil)
+         trata_link = TrataLink.trata_pagina(DOMINIO, "#{DOMINIO}robots.txt", nil)
          trata_link.code.should == "200"
          trata_link.body.should == @page.body
          trata_link.links.should == @page.links_url
@@ -30,20 +30,20 @@ module RoboLek
       
       it "should pagina.links length be 2" do
         Pagina.should_receive(:new).with(DOMINIO, "200", @page.body, @page.links_url, nil, [])
-        trata_link = TrataLink.trata_pagina(DOMINIO, nil)
+        trata_link = TrataLink.trata_pagina(DOMINIO, "#{DOMINIO}robots.txt", nil)
         trata_link.links.length.should == 3
       end
       
       it "should code error and links length be 0" do
         Pagina.should_receive(:new).with(DOMINIO_ERROR, "400", "", [], nil, [])
-        trata_link = TrataLink.trata_pagina(DOMINIO_ERROR, nil)
+        trata_link = TrataLink.trata_pagina(DOMINIO_ERROR, "#{DOMINIO}robots.txt", nil)
         trata_link.code.should == "400"
         trata_link.links.length.should == 0
       end
       
       it "should redirect to link and extract links" do
         Pagina.should_receive(:new).with(DOMINIO, "200", @page.body, @page.links_url, nil, [])
-        trata_link = TrataLink.trata_pagina(DOMINIO_REDIRECIONAMENTO, nil)
+        trata_link = TrataLink.trata_pagina(DOMINIO_REDIRECIONAMENTO, "#{DOMINIO}robots.txt", nil)
         trata_link.links.length.should == 3
       end
     end

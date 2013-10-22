@@ -6,19 +6,20 @@ module RoboLek
     
     attr_reader :code, :body, :links, :pagina, :url, :base_produtos, :produtos
     
-    def initialize(link, base_produtos)
+    def initialize(link, robots, base_produtos)
       @url = link
       @code = ""
       @body = ""
       @links = []
       @produtos = []
       @base_produtos = base_produtos
+      @robots = robots
       extrai_links(link)
       @pagina = Pagina.new(@url, @code, @body, @links, @base_produtos, @produtos)
     end
     
-    def self.trata_pagina(link, produtos = "")
-      self.new(link, produtos)
+    def self.trata_pagina(link, robots, produtos = "")
+      self.new(link, robots, produtos)
     end
     
     private

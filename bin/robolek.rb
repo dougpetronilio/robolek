@@ -7,8 +7,8 @@ require "benchmark"
 
 robolek = RoboLek.start
 
-robolek.insert({:url => "http://www.netshoes.com.br/", :produtos => "http://www.netshoes.com.br/produto/"})
-#robolek.insert({:url => "http://www.stoza.com.br/", :produtos => "http://www.stoza.com.br/camiseta/"})
+#robolek.insert({:url => "http://www.netshoes.com.br/", :produtos => "http://www.netshoes.com.br/produto/", :robots => "http://www.netshoes.com.br/robots.txt"})
+robolek.insert({:url => "http://www.stoza.com.br/", :produtos => "http://www.stoza.com.br/camiseta/", :robots => "http://www.stoza.com.br/robots.txt"})
 
 contador = 0
 Benchmark.bm do |x|

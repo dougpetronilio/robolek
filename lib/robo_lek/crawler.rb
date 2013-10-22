@@ -95,14 +95,13 @@ module RoboLek
     end
     
     def link_liberado?(link)
-      ret = false
+      ret = true
+      puts "[link_liberado?] link = #{link}"
       if link && link != ""
-        puts "[link_liberado?] link = #{link}"
+        puts "[link_liberado?] if ----------------- link = #{link}"
         uri_encode = URI.encode(link)
         uri = URI.parse(uri_encode)
         ret = @robotex.allowed?(uri)
-      else
-        ret = true
       end
       return ret
     end
