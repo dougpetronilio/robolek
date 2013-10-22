@@ -40,8 +40,10 @@ module RoboLek
     def insert(valor)
       begin
         produtos = ""
+        robots = ""
         produtos = valor[:produtos] if valor[:produtos]
-        @colecao_links.insert({:url => valor[:url], :crawled => false, :produtos => produtos})
+        robots = valor[:robots] if valor[:robots]
+        @colecao_links.insert({:url => valor[:url], :crawled => false, :produtos => produtos, :robots => robots})
       rescue Mongo::OperationFailure => e
       end
     end
@@ -54,15 +56,15 @@ module RoboLek
     def save_links(links, crawled = '', produtos = "")
       links.each do |url| 
         begin
-          if crawled == url
-            @colecao_links.update({:url => url}, {"$set" => {:date_saved => Time.now, :crawled => true}})
-          else
-            endereco = @colecao_links.find_one({:url => url})
-            if endereco && endereco['url']
-              @colecao_links.update({:url => url}, {"$set" => {:date_saved => Time.now}})
+          endereco = @colecao_links.find_one({:url => url})
+          if endereco && endereco['url']
+            if crawled == url
+              @colecao_links.update({:url => url}, {"$set" => {:date_saved => Time.now, :crawled => true}})
             else
-              @colecao_links.insert({:url => url, :date_saved => Time.now, :crawled => false, :produtos => produtos})
+              @colecao_links.update({:url => url}, {"$set" => {:date_saved => Time.now}})
             end
+          else
+            @colecao_links.insert({:url => url, :date_saved => Time.now, :crawled => false, :produtos => produtos})
           end
         rescue Mongo::OperationFailure => e
            puts "[save_links] error #{e}"

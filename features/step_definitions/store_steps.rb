@@ -4,7 +4,7 @@ end
 
 Dado(/^que os seguintes links corretos existem no banco de dados:$/) do |table|
   table.hashes.each do |line|
-    @robolek.insert({:url => line['url']})
+    @robolek.insert({:url => line['url'], :robots => line['robots']})
     cria_mock(line['url'], ['teste1', 'teste2'], 200)
   end
 end
@@ -19,12 +19,12 @@ Dado(/^que os seguintes links corretos existem no banco de dados para robo:$/) d
         @lista_de_produtos << "#{line['url']}"
         cria_mock(line['url'], [], 200)
       else
-        @robolek.insert({:url => line['url'], :produtos => line['produtos']})
+        @robolek.insert({:url => line['url'], :produtos => line['produtos'], :robots => line['robots']})
         @lista_de_links_nas_paginas << "#{line['url']}"
         cria_mock(line['url'], ['produtos/1'], 200)
       end
     else
-      @robolek.insert({:url => line['url']})
+      @robolek.insert({:url => line['url'], :robots => line['robots']})
       cria_mock(line['url'], ['teste1', 'teste2'], 200)
       cria_mock("#{line['url']+"teste1"}", ["/teste3"], 200)
       cria_mock("#{line['url']+"teste2"}", ["/teste4"], 200)
@@ -41,7 +41,7 @@ end
 
 Dado(/^que os seguintes links errados existem no banco de dados:$/) do |table|
   table.hashes.each do |line|
-    @robolek.insert({:url => line['url']})
+    @robolek.insert({:url => line['url'], :robots => line['robots']})
     cria_mock(line['url'], [], 400)
   end
 end
@@ -49,7 +49,7 @@ end
 Dado(/^que os seguintes links com redireciomento para "(.*?)" existem no banco de dados:$/) do |arg1, table|
   @lista_de_links_nas_paginas = []
   table.hashes.each do |line|
-    @robolek.insert({:url => line['url']})
+    @robolek.insert({:url => line['url'], :robots => line['robots']})
     cria_mock_redirecionamento(line['url'], [], 302, arg1)
     @lista_de_links_nas_paginas << line['url']
     @lista_de_links_nas_paginas << arg1

@@ -13,7 +13,7 @@ module RoboLek
         dominio = "http://www.teste.com/"
         
         stub_request(:get, "#{dominio}robots.txt").with(:headers => {'Accept'=>'*/*', 'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3', 'User-Agent'=>'RoboYep'}).to_return({:content_type => "text"}, :status => [200, "OK"])
-        db.should_receive(:links).with(1).and_return([{"url" => dominio}])
+        db.should_receive(:links).with(1).and_return([{"url" => dominio, "robots" => "#{dominio}robots.txt"}])
         
         TrataLink.should_receive(:trata_pagina).with(dominio)
         
@@ -29,7 +29,7 @@ module RoboLek
         pages = []
         pages << StubPage.new(dominio, "", :links => ['teste1', 'teste2'])
 
-        db.should_receive(:links).with(1).and_return([{"url" => dominio}])
+        db.should_receive(:links).with(1).and_return([{"url" => dominio, "robots" => "#{dominio}robots.txt"}])
         
         pages.each { |page| TrataLink.should_receive(:trata_pagina).with(dominio).and_return(trata_link) }
         
@@ -45,7 +45,7 @@ module RoboLek
         pages << StubPage.new(dominio, "", :links => ['teste1', 'teste2'])
         pages << StubPage.new(dominio2, "", :links => ['teste1'])
         
-        db.should_receive(:links).with(1).and_return([{"url" => dominio}, {"url" => dominio2}])
+        db.should_receive(:links).with(1).and_return([{"url" => dominio, "robots" => "#{dominio}robots.txt"}, {"url" => dominio2, "robots" => "#{dominio}robots.txt"}])
         pagina.stub(links: pages[0].links_url)
         trata_link.stub(pagina: pagina)
         
@@ -65,10 +65,10 @@ module RoboLek
         
         pagina.stub(links: pages[0].links_url, code: "200", :url => dominio, :base_produtos => "")
         
-        db.should_receive(:links).with(1).and_return([{"url" => dominio}])
+        db.should_receive(:links).with(1).and_return([{"url" => dominio, "robots" => "#{dominio}robots.txt"}])
         
         pages.each { |page| TrataLink.should_receive(:trata_pagina).with(dominio).and_return(pagina) }
-        pages.each { |page| db.should_receive(:save_links).with(pagina.links, "") }
+        pages.each { |page| db.should_receive(:save_links).with(pagina.links, dominio, "") }
 
         @robo = RoboLek.start(db, 1)
         @robo.crawl
@@ -84,7 +84,7 @@ module RoboLek
         pages << StubPage.new("#{dominio}teste1", "", :links => ['/teste3'])
         pages << StubPage.new("#{dominio}teste2", "", :links => [])
 
-        db.should_receive(:links).with(100).and_return([{"url" => dominio}])
+        db.should_receive(:links).with(100).and_return([{"url" => dominio, "robots" => "#{dominio}robots.txt"}])
         
         @robo = RoboLek.start(db)
         
@@ -92,7 +92,7 @@ module RoboLek
         
         TrataLink.should_receive(:trata_pagina).with(pages[0].dominio).and_return(pagina)
         
-        db.should_receive(:save_links).with(pages[0].links_url, "")
+        db.should_receive(:save_links).with(pages[0].links_url, dominio, "")
         @robo.loop_crawl(:next)
       end
       
@@ -102,7 +102,7 @@ module RoboLek
         pages << StubPage.new(dominio, "", :links => ['produto/teste2'])
         pages << StubPage.new("#{dominio}produto/teste2", "", :links => [])
 
-        db.should_receive(:links).with(100).and_return([{"url" => dominio, "produtos" => "#{dominio}produto/"}])
+        db.should_receive(:links).with(100).and_return([{"url" => dominio, "produtos" => "#{dominio}produto/", "robots" => "#{dominio}robots.txt"}])
         
         @robo = RoboLek.start(db)
         
@@ -123,7 +123,7 @@ module RoboLek
         pages << StubPage.new(dominio, "", :links => ['produtos/teste1'])
         pages << StubPage.new("#{dominio}produtos/teste1", "", :links => [])
         
-        db.should_receive(:links).with(100).and_return([{"url" => dominio, "produtos" => "#{dominio}produtos/"}])
+        db.should_receive(:links).with(100).and_return([{"url" => dominio, "produtos" => "#{dominio}produtos/", "robots" => "#{dominio}robots.txt"}])
         
         @robo = RoboLek.start(db)
         @robo.crawl

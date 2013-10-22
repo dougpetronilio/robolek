@@ -6,7 +6,7 @@ module RoboLek
   
   VERSION = '0.0.1';
   
-  def RoboLek.start(db = RoboLek.DBMongo, count = 100, threads = 2)
+  def RoboLek.start(db = RoboLek.DBMongo, count = 100, threads = 10)
     Crawler.start(db, count, threads)
   end
 
@@ -47,7 +47,7 @@ module RoboLek
     
     def salva_links
       @paginas_extraidas.each do |pagina|
-        @db_mongo.save_links(pagina.links, pagina.base_produtos) if pagina.code == "200"
+        @db_mongo.save_links(pagina.links, pagina.url, pagina.base_produtos) if pagina.code == "200"
         @db_mongo.save_produtos(pagina.produtos) if pagina.code == "200"
       end if @paginas_extraidas
     end
@@ -87,7 +87,7 @@ module RoboLek
       
       links = @db_mongo.links(count)
       links.each do |link| 
-        if link_liberado?(link['url'])
+        if link_liberado?(link['robots'])
           @lista_de_links << link
           @queue_links << link
         end
@@ -96,9 +96,14 @@ module RoboLek
     
     def link_liberado?(link)
       ret = false
-      uri_encode = URI.encode(link)
-      uri = URI.parse(uri_encode)
-      ret = @robotex.allowed?(uri)
+      if link && link != ""
+        puts "[link_liberado?] link = #{link}"
+        uri_encode = URI.encode(link)
+        uri = URI.parse(uri_encode)
+        ret = @robotex.allowed?(uri)
+      else
+        ret = true
+      end
       return ret
     end
     

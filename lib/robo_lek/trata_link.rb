@@ -49,10 +49,9 @@ module RoboLek
     def abre_pagina(link)
       uri_encode = URI.encode(link)
       uri = URI.parse(uri_encode)
+      puts "[abre_pagina] link = #{link}"
       response = Net::HTTP.get_response(uri)
     end
-    
-    #ou eu mando pra link de produto ou mando para link de pagina
     
     def pega_links
       return @links if !doc
