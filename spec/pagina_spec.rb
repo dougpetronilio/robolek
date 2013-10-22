@@ -3,10 +3,8 @@ $:.unshift(File.dirname(__FILE__))
 
 module RoboLek
   describe Pagina do
-    DOMINIO = "http://www.teste.com/"
-    
     before(:each) do
-      @pagina = Pagina.new(DOMINIO, "200", "body", ["link1", "link2"])
+      @pagina = Pagina.new(DOMINIO, "200", "body", ["link1", "link2"], "", [])
     end
     
     context "#new" do

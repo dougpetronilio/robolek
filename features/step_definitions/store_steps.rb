@@ -11,18 +11,31 @@ end
 
 Dado(/^que os seguintes links corretos existem no banco de dados para robo:$/) do |table|
   @lista_de_links_nas_paginas = []
+  @lista_de_produtos = []
   table.hashes.each do |line|
-    @robolek.insert({:url => line['url']})
-    cria_mock(line['url'], ['teste1', 'teste2'], 200)
-    cria_mock("#{line['url']+"teste1"}", ["/teste3"], 200)
-    cria_mock("#{line['url']+"teste2"}", ["/teste4"], 200)
-    cria_mock("#{line['url']+"teste2/teste4"}", [], 200)
-    cria_mock("#{line['url']+"teste1/teste3"}", [], 200)
-    @lista_de_links_nas_paginas << "#{line['url']}"
-    @lista_de_links_nas_paginas << "#{line['url']}teste1"
-    @lista_de_links_nas_paginas << "#{line['url']}teste2"
-    @lista_de_links_nas_paginas << "#{line['url']}teste1/teste3"
-    @lista_de_links_nas_paginas << "#{line['url']}teste2/teste4"
+    if line['produtos']
+      #puts "[cadastro_de_links] produtos = #{line['produtos']} | #{line['produto']} | #{line['url']}"
+      if line['produto'] == "true"
+        @lista_de_produtos << "#{line['url']}"
+        cria_mock(line['url'], [], 200)
+      else
+        @robolek.insert({:url => line['url'], :produtos => line['produtos']})
+        @lista_de_links_nas_paginas << "#{line['url']}"
+        cria_mock(line['url'], ['produtos/1'], 200)
+      end
+    else
+      @robolek.insert({:url => line['url']})
+      cria_mock(line['url'], ['teste1', 'teste2'], 200)
+      cria_mock("#{line['url']+"teste1"}", ["/teste3"], 200)
+      cria_mock("#{line['url']+"teste2"}", ["/teste4"], 200)
+      cria_mock("#{line['url']+"teste2/teste4"}", [], 200)
+      cria_mock("#{line['url']+"teste1/teste3"}", [], 200)
+      @lista_de_links_nas_paginas << "#{line['url']}"
+      @lista_de_links_nas_paginas << "#{line['url']}teste1"
+      @lista_de_links_nas_paginas << "#{line['url']}teste2"
+      @lista_de_links_nas_paginas << "#{line['url']}teste1/teste3"
+      @lista_de_links_nas_paginas << "#{line['url']}teste2/teste4"
+    end
   end
 end
 
@@ -39,6 +52,7 @@ Dado(/^que os seguintes links com redireciomento para "(.*?)" existem no banco d
     @robolek.insert({:url => line['url']})
     cria_mock_redirecionamento(line['url'], [], 302, arg1)
     @lista_de_links_nas_paginas << line['url']
+    @lista_de_links_nas_paginas << arg1
   end
 end
 
@@ -71,7 +85,7 @@ Então(/^links devem estar no banco de dados$/) do
   end if @links
   lista_de_links_banco_ordenada = lista_de_links_banco_ordenada.sort
   lista_de_links_nas_paginas_ordenada = @lista_de_links_nas_paginas.sort
-  STDOUT.puts "#{lista_de_links_banco_ordenada} == #{lista_de_links_nas_paginas_ordenada}"
+  #STDOUT.puts "#{lista_de_links_banco_ordenada} == #{lista_de_links_nas_paginas_ordenada}"
   lista_de_links_nas_paginas_ordenada.should == lista_de_links_banco_ordenada
 end
 
@@ -94,4 +108,19 @@ Quando(/^inicio o loop do robo$/) do
     cont += 1
   end
   @links_extraidos = @robolek.paginas_extraidas
+end
+
+Quando(/^pego os produtos do banco de dados$/) do
+  @produtos = @robolek.all_produtos
+end
+
+Então(/^produtos devem estar no banco de dados$/) do
+  lista_de_produtos_banco_ordenada = []
+  @produtos.each do |link|
+    lista_de_produtos_banco_ordenada << link['url']
+  end if @links
+  lista_de_produtos_banco_ordenada = lista_de_produtos_banco_ordenada.sort
+  lista_de_produtos_ordenada = @lista_de_produtos.sort
+  #STDOUT.puts "#{lista_de_produtos_ordenada} == #{lista_de_produtos_banco_ordenada}"
+  lista_de_produtos_ordenada.should == lista_de_produtos_banco_ordenada
 end

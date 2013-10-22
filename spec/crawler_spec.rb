@@ -6,6 +6,7 @@ module RoboLek
     let(:db) { double("db").as_null_object }
     let(:trata_link) { double("tratalink").as_null_object }
     let(:pagina) { double("pagina").as_null_object }
+    let(:produto) { double("pagina").as_null_object }
 
     context "#start" do      
       it "should have links in list when start robolek" do
@@ -43,9 +44,8 @@ module RoboLek
         pages = []
         pages << StubPage.new(dominio, "", :links => ['teste1', 'teste2'])
         pages << StubPage.new(dominio2, "", :links => ['teste1'])
-
-        db.should_receive(:links).with(1).and_return([{"url" => dominio}, {"url" => dominio2}])
         
+        db.should_receive(:links).with(1).and_return([{"url" => dominio}, {"url" => dominio2}])
         pagina.stub(links: pages[0].links_url)
         trata_link.stub(pagina: pagina)
         
@@ -63,12 +63,12 @@ module RoboLek
         pages = []
         pages << StubPage.new(dominio, "", :links => ['teste1', 'teste2'])
         
-        pagina.stub(links: pages[0].links_url, code: "200", :url => dominio)
+        pagina.stub(links: pages[0].links_url, code: "200", :url => dominio, :base_produtos => "")
         
         db.should_receive(:links).with(1).and_return([{"url" => dominio}])
         
         pages.each { |page| TrataLink.should_receive(:trata_pagina).with(dominio).and_return(pagina) }
-        pages.each { |page| db.should_receive(:save).with(pagina.links, dominio) }
+        pages.each { |page| db.should_receive(:save_links).with(pagina.links, "") }
 
         @robo = RoboLek.start(db, 1)
         @robo.crawl
@@ -88,12 +88,49 @@ module RoboLek
         
         @robo = RoboLek.start(db)
         
-        pagina.stub(links: pages[0].links_url, code: "200", :url => dominio)
+        pagina.stub(links: pages[0].links_url, code: "200", :url => dominio, :base_produtos => "")
+        
         TrataLink.should_receive(:trata_pagina).with(pages[0].dominio).and_return(pagina)
-        db.should_receive(:save).with(pages[0].links_url, dominio)
+        
+        db.should_receive(:save_links).with(pages[0].links_url, "")
         @robo.loop_crawl(:next)
       end
       
+      it "should return and save produto" do
+        dominio = "http://www.teste.com/"
+        pages = []
+        pages << StubPage.new(dominio, "", :links => ['produto/teste2'])
+        pages << StubPage.new("#{dominio}produto/teste2", "", :links => [])
+
+        db.should_receive(:links).with(100).and_return([{"url" => dominio, "produtos" => "#{dominio}produto/"}])
+        
+        @robo = RoboLek.start(db)
+        
+        pagina.stub(links: [], :url => dominio, code: "200", :produtos => ["#{dominio}produto/teste2"])
+        
+        TrataLink.should_receive(:trata_pagina).with("#{dominio}", "#{dominio}produto/").and_return(pagina)
+        
+        db.should_receive(:save_produtos).with(["#{dominio}produto/teste2"])
+        @robo.loop_crawl(:next)
+      end
+    end
+    
+    context "#all_produtos" do
+      it "should return produtos" do
+        dominio = "http://www.teste.com/"
+        produtos = [{"url" => "#{dominio}produtos/teste1"}]
+        pages = []
+        pages << StubPage.new(dominio, "", :links => ['produtos/teste1'])
+        pages << StubPage.new("#{dominio}produtos/teste1", "", :links => [])
+        
+        db.should_receive(:links).with(100).and_return([{"url" => dominio, "produtos" => "#{dominio}produtos/"}])
+        
+        @robo = RoboLek.start(db)
+        @robo.crawl
+        
+        db.should_receive(:all_produtos).and_return(produtos)
+        @robo.all_produtos.should == produtos
+      end
     end
   end
 end

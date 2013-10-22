@@ -6,7 +6,7 @@ module RoboLek
   
   VERSION = '0.0.1';
   
-  def RoboLek.start(db = RoboLek.DBMongo, count = 100, threads = 60)
+  def RoboLek.start(db = RoboLek.DBMongo, count = 100, threads = 2)
     Crawler.start(db, count, threads)
   end
 
@@ -47,8 +47,9 @@ module RoboLek
     
     def salva_links
       @paginas_extraidas.each do |pagina|
-        @db_mongo.save(pagina.links, pagina.url) if pagina.code == "200"
-      end
+        @db_mongo.save_links(pagina.links, pagina.base_produtos) if pagina.code == "200"
+        @db_mongo.save_produtos(pagina.produtos) if pagina.code == "200"
+      end if @paginas_extraidas
     end
     
     def loop_crawl(sinal = :next)
@@ -75,13 +76,16 @@ module RoboLek
       @db_mongo.all_links(@count).to_a
     end
     
+    def all_produtos
+      @db_mongo.all_produtos.to_a
+    end
+    
     private
     def carrega_lista_de_links(count)
       @lista_de_links = []
       @queue_links = Queue.new
       
       links = @db_mongo.links(count)
-      
       links.each do |link| 
         if link_liberado?(link['url'])
           @lista_de_links << link
@@ -100,9 +104,9 @@ module RoboLek
     
     def extrai_paginas
       @threads = []
-      
+
       @threads_count.times do
-        @threads << Thread.new {Tentaculo.new(@queue_links, @paginas_extraidas).run}
+        @threads << Thread.new {Tentaculo.new(@queue_links, @paginas_extraidas, :pagina).run}
       end
       
       loop do
@@ -111,7 +115,7 @@ module RoboLek
           break
         end
       end
-      
+
       @threads.each {|thread| thread.join}
       
       @paginas_extraidas.uniq!

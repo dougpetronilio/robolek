@@ -4,24 +4,25 @@ require 'nokogiri'
 module RoboLek
   class TrataLink
     
-    attr_reader :code, :body, :links, :pagina, :url
+    attr_reader :code, :body, :links, :pagina, :url, :base_produtos, :produtos
     
-    def initialize(link)
+    def initialize(link, base_produtos)
       @url = link
       @code = ""
       @body = ""
       @links = []
+      @produtos = []
+      @base_produtos = base_produtos
       extrai_links(link)
-      @pagina = Pagina.new(@url, @code, @body, @links)
+      @pagina = Pagina.new(@url, @code, @body, @links, @base_produtos, @produtos)
     end
     
-    def self.trata_pagina(link)
-      self.new(link)
+    def self.trata_pagina(link, produtos = "")
+      self.new(link, produtos)
     end
     
     private
     def extrai_links(link)
-      links = []
       pagina = {}
       response = abre_pagina(link)
       @code = response.code
@@ -51,19 +52,34 @@ module RoboLek
       response = Net::HTTP.get_response(uri)
     end
     
+    #ou eu mando pra link de produto ou mando para link de pagina
+    
     def pega_links
-      links = []
-      return links if !doc
+      return @links if !doc
       
       doc.search("//a[@href]").each do |a|
         u = a['href']
         next if u.nil? or u.empty?
         absolute = URI.join( @url, u ).to_s rescue next
-        links << absolute if in_domain?(absolute)
+        if link_produto?(absolute)
+          @produtos << absolute if in_domain?(absolute)
+        else
+          @links << absolute if in_domain?(absolute)
+        end
       end
-      links << @url
-      links.uniq!
-      links
+      
+      @links << @url
+      
+      @links.uniq!
+      @links
+    end
+    
+    def link_produto?(link)
+      #puts "[link_produto?] #{link.class} | #{@base_produtos} | #{link}"
+      if @base_produtos != nil && @base_produtos != ""
+        return link.include?(@base_produtos)
+      end
+      return false
     end
     
     def doc

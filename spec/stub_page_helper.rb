@@ -15,6 +15,7 @@ module RoboLek
       @code = 200
       @code = opcoes[:code] if opcoes.has_key?(:code)
       @dominio = dominio
+      @body = opcoes[:body] if opcoes.has_key?(:body)
       
       cria_body unless @body
       

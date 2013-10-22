@@ -1,17 +1,24 @@
 module RoboLek
   class Tentaculo
-    def initialize(links_queue, pages)
-      @links_queue = links_queue
+    def initialize(queue, pages, tipo)
+      @queue = queue
       @pages = pages
+      @tipo = tipo
     end
     
     def run
       loop do
-        link = @links_queue.pop
+        link = @queue.pop
+        produto = link['produtos']
+        #puts "[run] link = #{link}"
         
         break if link == :FIM
         
-        @pages << TrataLink.trata_pagina(link['url'])
+        if produto
+          @pages << TrataLink.trata_pagina(link['url'], produto)
+        else
+          @pages << TrataLink.trata_pagina(link['url'])
+        end
       end
     end
   end

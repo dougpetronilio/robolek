@@ -22,8 +22,7 @@ Funcionalidade: robolek trata links
 		| url				    | date       |
 		| http://www.teste.com/ | 2013-10-03 |
 		Quando inicio o loop do robo
-		E salvo os links extraidos no banco de dados
-		Quando pego os links do banco de dados
+		E pego os links do banco de dados
 		Então links devem estar no banco de dados
 		E Limpa banco de dados
 
@@ -48,6 +47,17 @@ Funcionalidade: robolek trata links
 		Quando pego os links do banco de dados
 		Então links devem estar no banco de dados
 		E Limpa banco de dados
-		
-		
-	
+
+
+	Cenário: Crawl link com produtos
+		Dado que inicio o robolek
+		E que os seguintes links corretos existem no banco de dados para robo:
+		| url				              | date       | produtos                      | produto |
+		| http://www.teste.com/           | 2013-10-03 | http://www.teste.com/produtos | false   |
+		| http://www.teste.com/produtos/1 | 2013-10-03 | http://www.teste.com/produtos | true    |
+		Quando inicio o loop do robo		
+		E pego os links do banco de dados
+		E pego os produtos do banco de dados
+		Então links devem estar no banco de dados
+		E produtos devem estar no banco de dados
+		E Limpa banco de dados
