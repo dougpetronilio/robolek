@@ -30,7 +30,7 @@ module RoboLek
     context "#save_links" do
       it "should return data from mongo" do
         dominio = "http://www.teste.com/"
-        @db_mongo.save_links([dominio, "#{dominio}teste1"])
+        @db_mongo.save_links([dominio, "#{dominio}teste1"], "#{dominio}robots.txt")
         paginas = @db_mongo.links(10)
         paginas.count.should == 2
       end

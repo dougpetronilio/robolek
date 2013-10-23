@@ -64,12 +64,12 @@ module RoboLek
         pages = []
         pages << StubPage.new(dominio, "", :links => ['teste1', 'teste2'])
         
-        pagina.stub(links: pages[0].links_url, code: "200", :url => dominio, :base_produtos => "")
+        pagina.stub(links: pages[0].links_url, code: "200", :url => dominio, :base_produtos => "", :robots => "#{dominio}robots.txt")
         
         db.should_receive(:links).with(1).and_return([{"url" => dominio, "robots" => "#{dominio}robots.txt"}])
         
         pages.each { |page| TrataLink.should_receive(:trata_pagina).with(dominio, "#{dominio}robots.txt").and_return(pagina) }
-        pages.each { |page| db.should_receive(:save_links).with(pagina.links, dominio, "") }
+        pages.each { |page| db.should_receive(:save_links).with(pagina.links, "#{dominio}robots.txt", dominio, "") }
 
         @robo = RoboLek.start(db, 1)
         @robo.crawl
@@ -84,16 +84,18 @@ module RoboLek
         pages << StubPage.new(dominio, "", :links => ['teste1', 'teste2'])
         pages << StubPage.new("#{dominio}teste1", "", :links => ['/teste3'])
         pages << StubPage.new("#{dominio}teste2", "", :links => [])
+        
+        db.stub(todos_crawled?: false)
 
         db.should_receive(:links).with(100).and_return([{"url" => dominio, "robots" => "#{dominio}robots.txt"}])
         
         @robo = RoboLek.start(db)
         
-        pagina.stub(links: pages[0].links_url, code: "200", :url => dominio, :base_produtos => "")
+        pagina.stub(links: pages[0].links_url, code: "200", :url => dominio, :base_produtos => "", :robots => "#{dominio}robots.txt")
         
         TrataLink.should_receive(:trata_pagina).with(pages[0].dominio, "#{dominio}robots.txt").and_return(pagina)
         
-        db.should_receive(:save_links).with(pages[0].links_url, dominio, "")
+        db.should_receive(:save_links).with(pages[0].links_url, "#{dominio}robots.txt", dominio, "")
         @robo.loop_crawl(:next)
       end
       
@@ -102,6 +104,8 @@ module RoboLek
         pages = []
         pages << StubPage.new(dominio, "", :links => ['produto/teste2'])
         pages << StubPage.new("#{dominio}produto/teste2", "", :links => [])
+        
+        db.stub(todos_crawled?: false)
 
         db.should_receive(:links).with(100).and_return([{"url" => dominio, "produtos" => "#{dominio}produto/", "robots" => "#{dominio}robots.txt"}])
         

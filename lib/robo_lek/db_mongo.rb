@@ -53,7 +53,7 @@ module RoboLek
       urls.count == 0
     end
     
-    def save_links(links, crawled = '', produtos = "")
+    def save_links(links, robots, crawled = '', produtos = "")
       links.each do |url| 
         begin
           endereco = @colecao_links.find_one({:url => url})
@@ -64,7 +64,7 @@ module RoboLek
               @colecao_links.update({:url => url}, {"$set" => {:date_saved => Time.now}})
             end
           else
-            @colecao_links.insert({:url => url, :date_saved => Time.now, :crawled => false, :produtos => produtos})
+            @colecao_links.insert({:url => url, :date_saved => Time.now, :crawled => false, :produtos => produtos, :robots => robots})
           end
         rescue Mongo::OperationFailure => e
            puts "[save_links] error #{e}"

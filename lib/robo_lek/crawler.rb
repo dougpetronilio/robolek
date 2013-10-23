@@ -47,24 +47,28 @@ module RoboLek
     
     def salva_links
       @paginas_extraidas.each do |pagina|
-        @db_mongo.save_links(pagina.links, pagina.url, pagina.base_produtos) if pagina.code == "200"
+        @db_mongo.save_links(pagina.links, pagina.robots, pagina.url, pagina.base_produtos) if pagina.code == "200"
         @db_mongo.save_produtos(pagina.produtos) if pagina.code == "200"
       end if @paginas_extraidas
     end
     
     def loop_crawl(sinal = :next)
-      if sinal == :next
-        puts ""
-        puts "#"*70
-        Benchmark.bm do |x|
-          x.report("crawl") { crawl }
+      if fim?
+        close_db
+      else
+        if sinal == :next
+          puts ""
+          puts "#"*70
+          Benchmark.bm do |x|
+            x.report("crawl") { crawl }
+          end
+          Benchmark.bm do |x|
+            x.report("salva_links") { salva_links }
+          end
+          @paginas_extraidas = []
+          puts ""
+          puts "#"*70
         end
-        Benchmark.bm do |x|
-          x.report("salva_links") { salva_links }
-        end
-        @paginas_extraidas = []
-        puts ""
-        puts "#"*70
       end
     end
     
@@ -96,9 +100,9 @@ module RoboLek
     
     def link_liberado?(link)
       ret = true
-      puts "[link_liberado?] link = #{link}"
+      #puts "[link_liberado?] link = #{link}"
       if link && link != ""
-        puts "[link_liberado?] if ----------------- link = #{link}"
+        #puts "[link_liberado?] if ----------------- link = #{link}"
         uri_encode = URI.encode(link)
         uri = URI.parse(uri_encode)
         ret = @robotex.allowed?(uri)

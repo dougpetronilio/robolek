@@ -4,7 +4,7 @@ require 'nokogiri'
 module RoboLek
   class TrataLink
     
-    attr_reader :code, :body, :links, :pagina, :url, :base_produtos, :produtos
+    attr_reader :code, :body, :links, :pagina, :url, :base_produtos, :produtos, :robots
     
     def initialize(link, robots, base_produtos)
       @url = link
@@ -26,32 +26,67 @@ module RoboLek
     def extrai_links(link)
       pagina = {}
       response = abre_pagina(link)
-      @code = response.code
-      
-      case @code.to_i
-      when (200..206)
-        @body = response.body
-        @links = pega_links
-      when (300..307)
-        @url = response['location']
-        response = abre_pagina(@url)
+      if response
         @code = response.code
-        if (200..206).include?(@code.to_i)
+      
+        case @code.to_i
+        when (200..206)
           @body = response.body
           @links = pega_links
+        when (300..307)
+          @url = response['location']
+          response = abre_pagina(@url)
+          if response
+            @code = response.code
+            if (200..206).include?(@code.to_i)
+              @body = response.body
+              @links = pega_links
+            end
+          end
+        when (400..417)
+          STDOUT.puts "Erro na requisição"
+        when (500..505)
+          STDOUT.puts "Erro no servidor"
         end
-      when (400..417)
-        STDOUT.puts "Erro na requisição"
-      when (500..505)
-        STDOUT.puts "Erro no servidor"
       end
+    end
+    
+    def abre_pagina_new(link)
+      uri_encode = URI.encode(link)
+      uri = URI.parse(uri_encode)
+      #puts "[abre_pagina] link = #{link}"
+      begin
+        response = Net::HTTP.get_response(uri)
+      rescue Timeout::Error => e
+        puts "[abre_pagina] error -> #{e}"
+        response = nil 
+      end
+      return response
     end
     
     def abre_pagina(link)
       uri_encode = URI.encode(link)
       uri = URI.parse(uri_encode)
-      puts "[abre_pagina] link = #{link}"
-      response = Net::HTTP.get_response(uri)
+      #puts "[abre_pagina] link = #{link}"
+      begin
+        req = Net::HTTP.new(uri.host, uri.port)
+        
+        if uri.scheme == "https"
+          req.use_ssl = true
+          req.verify_mode = OpenSSL::SSL::VERIFY_NONE
+        end
+        
+        response = req.request(Net::HTTP::Get.new(uri))
+        
+      rescue Timeout::Error => e
+        puts "[abre_pagina] error -> #{e}"
+        response = nil 
+      end
+      return response
+    end
+    
+    def refresh(uri)
+      
     end
     
     def pega_links
