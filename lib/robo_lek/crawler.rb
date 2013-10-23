@@ -6,7 +6,7 @@ module RoboLek
   
   VERSION = '0.0.1';
   
-  def RoboLek.start(db = RoboLek.DBMongo, count = 100, threads = 10)
+  def RoboLek.start(db = RoboLek.DBMongo, count = 100, threads = 40)
     Crawler.start(db, count, threads)
   end
 

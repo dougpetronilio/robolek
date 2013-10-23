@@ -51,42 +51,31 @@ module RoboLek
       end
     end
     
-    def abre_pagina_new(link)
-      uri_encode = URI.encode(link)
-      uri = URI.parse(uri_encode)
-      #puts "[abre_pagina] link = #{link}"
-      begin
-        response = Net::HTTP.get_response(uri)
-      rescue Timeout::Error => e
-        puts "[abre_pagina] error -> #{e}"
-        response = nil 
-      end
-      return response
-    end
-    
     def abre_pagina(link)
       uri_encode = URI.encode(link)
       uri = URI.parse(uri_encode)
       #puts "[abre_pagina] link = #{link}"
+      retries = 0
       begin
-        req = Net::HTTP.new(uri.host, uri.port)
-        
-        if uri.scheme == "https"
-          req.use_ssl = true
-          req.verify_mode = OpenSSL::SSL::VERIFY_NONE
-        end
-        
-        response = req.request(Net::HTTP::Get.new(uri))
-        
-      rescue Timeout::Error => e
-        puts "[abre_pagina] error -> #{e}"
-        response = nil 
+        req = Net::HTTP::Get.new(uri)
+        response = connection(uri).request(req)
+      rescue Timeout::Error, Net::HTTPBadResponse, EOFError => e
+        puts "[abre_pagina] error -> #{e} ---- [#{link}]"
+      rescue Exception => e
+        puts "[abre_pagina] error -> #{e} ---- [#{link}]"
       end
       return response
     end
     
-    def refresh(uri)
+    def connection(uri)
+      req = Net::HTTP.new(uri.host, uri.port)
       
+      if uri.scheme == "https"
+        req.use_ssl = true
+        req.verify_mode = OpenSSL::SSL::VERIFY_NONE
+      end
+      
+      response = req.start
     end
     
     def pega_links
@@ -112,7 +101,13 @@ module RoboLek
     def link_produto?(link)
       #puts "[link_produto?] #{link.class} | #{@base_produtos} | #{link}"
       if @base_produtos != nil && @base_produtos != ""
-        return link.include?(@base_produtos)
+        mat = /#{@base_produtos}/
+        #puts "[link_produto?] base_produto = #{@base_produto} / mat = #{mat}"
+        if mat.match(link)
+          return true
+        else
+          return false
+        end
       end
       return false
     end
