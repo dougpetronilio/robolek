@@ -14,11 +14,11 @@ Dado(/^que os seguintes links corretos existem no banco de dados para robo:$/) d
   @lista_de_produtos = []
   table.hashes.each do |line|
     if line['produtos']
-      #puts "[cadastro_de_links] produtos = #{line['produtos']} | #{line['produto']} | #{line['url']}"
       if line['produto'] == "true"
         @lista_de_produtos << "#{line['url']}"
         cria_mock(line['url'], [], 200)
       else
+        puts "[cadastro_de_links] produtos = #{line['produtos']} | #{line['produto']} | #{line['url']}"
         @robolek.insert({:url => line['url'], :produtos => line['produtos'], :robots => line['robots']})
         @lista_de_links_nas_paginas << "#{line['url']}"
         cria_mock(line['url'], ['produtos/1'], 200)
@@ -116,11 +116,20 @@ end
 
 Então(/^produtos devem estar no banco de dados$/) do
   lista_de_produtos_banco_ordenada = []
+  
   @produtos.each do |link|
     lista_de_produtos_banco_ordenada << link['url']
   end if @links
+  
   lista_de_produtos_banco_ordenada = lista_de_produtos_banco_ordenada.sort
   lista_de_produtos_ordenada = @lista_de_produtos.sort
   #STDOUT.puts "#{lista_de_produtos_ordenada} == #{lista_de_produtos_banco_ordenada}"
   lista_de_produtos_ordenada.should == lista_de_produtos_banco_ordenada
+end
+
+Então(/^produtos devem estar no sqlite$/) do
+  @produtos_sql = @robolek.all_produtos_sql
+  puts "[sql] - #{@produtos_sql.class}"
+  puts "[sql] - #{@produtos_sql} / #{@lista_de_produtos}"
+  @produtos_sql[0].should == @lista_de_produtos
 end

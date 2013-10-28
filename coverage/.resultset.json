@@ -66,6 +66,24 @@
         null,
         null
       ],
+      "/Users/douglaspetronilio/Google Drive/startups/estilooks/robolek/spec/db_postgres_spec.rb": [
+        1,
+        1,
+        null,
+        1,
+        1,
+        null,
+        null
+      ],
+      "/Users/douglaspetronilio/Google Drive/startups/estilooks/robolek/spec/db_sqlite_spec.rb": [
+        1,
+        1,
+        null,
+        1,
+        1,
+        null,
+        null
+      ],
       "/Users/douglaspetronilio/Google Drive/startups/estilooks/robolek/spec/pagina_spec.rb": [
         1,
         1,
@@ -188,6 +206,6 @@
         null
       ]
     },
-    "timestamp": 1382529535
+    "timestamp": 1382989177
   }
 }

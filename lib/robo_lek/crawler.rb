@@ -6,14 +6,15 @@ module RoboLek
   
   VERSION = '0.0.1';
   
-  def RoboLek.start(db = RoboLek.DBMongo, count = 100, threads = 40)
-    Crawler.start(db, count, threads)
+  def RoboLek.start(db = RoboLek.DBMongo, db_sql = RoboLek.DBSqlite, count = 100, threads = 40)
+    Crawler.start(db, db_sql, count, threads)
   end
 
   class Crawler
     attr_reader :lista_de_links, :paginas_extraidas
     
-    def initialize(db, count, threads_count)
+    def initialize(db, db_sql, count, threads_count)
+      @db_sql = db_sql
       @db_mongo = db
       @count = count
       @threads = []
@@ -28,8 +29,8 @@ module RoboLek
       @db_mongo.todos_crawled?
     end
     
-    def self.start(db, count, threads)
-      self.new(db, count, threads)
+    def self.start(db, db_sql, count, threads)
+      self.new(db, db_sql, count, threads)
     end
     
     def insert(valor)
@@ -38,6 +39,7 @@ module RoboLek
     
     def clean_db
       @db_mongo.clean
+      @db_sql.clean
     end
     
     def crawl
@@ -82,6 +84,10 @@ module RoboLek
     
     def all_produtos
       @db_mongo.all_produtos.to_a
+    end
+    
+    def all_produtos_sql
+      @db_sql.all_produtos_url
     end
     
     private

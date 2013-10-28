@@ -1,6 +1,5 @@
 require "mongo"
 
-
 module RoboLek
   
   def self.DBMongo(db_mongo = nil)
@@ -77,7 +76,7 @@ module RoboLek
         begin
           @colecao_produtos.insert({:url => url, :date_saved => Time.now})
         rescue Mongo::OperationFailure => e
-           puts "[save_links] error #{e}"
+           #puts "[save_links] error #{e}"
            @colecao_produtos.update({:url => url}, {"$set" => {:date_saved => Time.now}})
         end
       end

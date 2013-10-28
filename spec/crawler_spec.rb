@@ -6,7 +6,8 @@ module RoboLek
     let(:db) { double("db").as_null_object }
     let(:trata_link) { double("tratalink").as_null_object }
     let(:pagina) { double("pagina").as_null_object }
-    let(:produto) { double("pagina").as_null_object }
+    let(:produto) { double("produto").as_null_object }
+    let(:db_sql) { double("db_sql").as_null_object }
 
     context "#start" do      
       it "should have links in list when start robolek" do
@@ -17,7 +18,7 @@ module RoboLek
         
         TrataLink.should_receive(:trata_pagina).with(dominio, "#{dominio}robots.txt")
         
-        @robo = RoboLek.start(db, 1)
+        @robo = RoboLek.start(db, db_sql, 1)
         @robo.crawl
         @robo.lista_de_links.length.should == 1
       end
@@ -33,7 +34,7 @@ module RoboLek
         
         pages.each { |page| TrataLink.should_receive(:trata_pagina).with(dominio, "#{dominio}robots.txt").and_return(trata_link) }
         
-        @robo = RoboLek.start(db, 1)
+        @robo = RoboLek.start(db, db_sql, 1)
         @robo.crawl
         @robo.paginas_extraidas.length.should == 1
       end
@@ -52,7 +53,7 @@ module RoboLek
         TrataLink.should_receive(:trata_pagina).with(pages[0].dominio, "#{dominio}robots.txt").and_return(trata_link)
         TrataLink.should_receive(:trata_pagina).with(pages[1].dominio, "#{dominio2}robots.txt").and_return(trata_link)
         
-        @robo = RoboLek.start(db, 1)
+        @robo = RoboLek.start(db, db_sql, 1)
         @robo.crawl
         @robo.paginas_extraidas.length.should == 1
       end
@@ -71,7 +72,7 @@ module RoboLek
         pages.each { |page| TrataLink.should_receive(:trata_pagina).with(dominio, "#{dominio}robots.txt").and_return(pagina) }
         pages.each { |page| db.should_receive(:save_links).with(pagina.links, "#{dominio}robots.txt", dominio, "") }
 
-        @robo = RoboLek.start(db, 1)
+        @robo = RoboLek.start(db, db_sql, 1)
         @robo.crawl
         @robo.salva_links
       end
@@ -89,7 +90,7 @@ module RoboLek
 
         db.should_receive(:links).with(100).and_return([{"url" => dominio, "robots" => "#{dominio}robots.txt"}])
         
-        @robo = RoboLek.start(db)
+        @robo = RoboLek.start(db, db_sql)
         
         pagina.stub(links: pages[0].links_url, code: "200", :url => dominio, :base_produtos => "", :robots => "#{dominio}robots.txt")
         
@@ -109,7 +110,7 @@ module RoboLek
 
         db.should_receive(:links).with(100).and_return([{"url" => dominio, "produtos" => "#{dominio}produto/", "robots" => "#{dominio}robots.txt"}])
         
-        @robo = RoboLek.start(db)
+        @robo = RoboLek.start(db, db_sql)
         
         pagina.stub(links: [], :url => dominio, code: "200", :produtos => ["#{dominio}produto/teste2"])
         
@@ -118,6 +119,7 @@ module RoboLek
         db.should_receive(:save_produtos).with(["#{dominio}produto/teste2"])
         @robo.loop_crawl(:next)
       end
+      
     end
     
     context "#all_produtos" do
@@ -130,11 +132,22 @@ module RoboLek
         
         db.should_receive(:links).with(100).and_return([{"url" => dominio, "produtos" => "#{dominio}produtos/", "robots" => "#{dominio}robots.txt"}])
         
-        @robo = RoboLek.start(db)
+        @robo = RoboLek.start(db, db_sql)
         @robo.crawl
         
         db.should_receive(:all_produtos).and_return(produtos)
         @robo.all_produtos.should == produtos
+      end
+    end
+    
+    context "#all_produtos_sql" do
+      it "should return produtos from db sqlite" do
+        produtos = [["www.teste.com/"]]
+        db_sql.should_receive(:all_produtos_url).and_return(produtos)
+        
+        @robo = RoboLek.start(db, db_sql)
+        
+        @robo.all_produtos_sql.should == produtos
       end
     end
   end

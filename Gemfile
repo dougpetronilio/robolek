@@ -15,4 +15,6 @@ end
 
 group :db do
   gem "mongo"
+  gem "sqlite3"
+  gem "pg"
 end

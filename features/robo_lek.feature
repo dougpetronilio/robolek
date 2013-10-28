@@ -48,16 +48,29 @@ Funcionalidade: robolek trata links
 		Então links devem estar no banco de dados
 		E Limpa banco de dados
 
-
 	Cenário: Crawl link com produtos
 		Dado que inicio o robolek
 		E que os seguintes links corretos existem no banco de dados para robo:
 		| url				              | date       | produtos                      | produto | robots                          |
-		| http://www.teste.com/           | 2013-10-03 | http://www.teste.com/produtos | false   | http://www.teste.com/robots.txt |
-		| http://www.teste.com/produtos/1 | 2013-10-03 | http://www.teste.com/produtos | true    | http://www.teste.com/robots.txt |
+		| http://www.teste.com/           | 2013-10-03 | (http://www.teste.com/produtos)(.+) | false   | http://www.teste.com/robots.txt |
+		| http://www.teste.com/produtos/1 | 2013-10-03 | (http://www.teste.com/produtos)(.+) | true    | http://www.teste.com/robots.txt |
 		Quando inicio o loop do robo		
 		E pego os links do banco de dados
 		E pego os produtos do banco de dados
 		Então links devem estar no banco de dados
 		E produtos devem estar no banco de dados
+		E Limpa banco de dados
+		
+	@wip
+	Cenário: Crawl produto cadastrado
+		Dado que inicio o robolek
+		E que os seguintes links corretos existem no banco de dados para robo:
+		| url				              | date       | produtos                      | produto | robots                          |
+		| http://www.teste.com/           | 2013-10-03 | (http://www.teste.com/produtos)(.+) | false   | http://www.teste.com/robots.txt |
+		| http://www.teste.com/produtos/1 | 2013-10-03 | (http://www.teste.com/produtos)(.+) | true    | http://www.teste.com/robots.txt |
+		Quando inicio o loop do robo
+		E pego os links do banco de dados	
+		E pego os produtos do banco de dados
+		Então produtos devem estar no banco de dados
+		E produtos devem estar no sqlite
 		E Limpa banco de dados
