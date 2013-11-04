@@ -6,5 +6,4 @@ env:
 services:
   - mongodb
 before_script:
-  - mkdir db
   - sqlite3 db/test.sqlite3 "CREATE TABLE \"produtos\" (\"id\" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, \"nome\" varchar(255), \"link\" varchar(255), \"preco\" varchar(255), \"foto\" varchar(255), \"created_at\" datetime NOT NULL, \"updated_at\" datetime NOT NULL, \"genero\" varchar(255)); CREATE UNIQUE INDEX \"index_produtos_on_link\" ON \"produtos\" (\"link\");"
