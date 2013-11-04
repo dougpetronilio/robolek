@@ -4,22 +4,25 @@ require 'nokogiri'
 module RoboLek
   class TrataLink
     
-    attr_reader :code, :body, :links, :pagina, :url, :base_produtos, :produtos, :robots
+    attr_reader :code, :body, :links, :pagina, :url, :base_produtos, :produtos, :robots, :base_preco, :base_foto, :base_genero
     
-    def initialize(link, robots, base_produtos)
+    def initialize(link, robots, base_produtos, base_preco, base_foto, base_genero)
       @url = link
       @code = ""
       @body = ""
       @links = []
       @produtos = []
       @base_produtos = base_produtos
+      @base_preco = base_preco
+      @base_foto = base_foto
+      @base_genero = base_genero
       @robots = robots
       extrai_links(link)
       @pagina = Pagina.new(@url, @code, @body, @links, @base_produtos, @produtos)
     end
     
-    def self.trata_pagina(link, robots, produtos = "")
-      self.new(link, robots, produtos)
+    def self.trata_pagina(link, robots, produtos = "", base_preco = "", base_foto = "", base_genero = "")
+      self.new(link, robots, produtos, base_preco, base_foto, base_genero)
     end
     
     private
@@ -84,7 +87,7 @@ module RoboLek
       doc.search("//a[@href]").each do |a|
         u = a['href']
         next if u.nil? or u.empty?
-        absolute = URI.join( @url, u ).to_s rescue next
+        absolute = URI.join(@url, u).to_s rescue next
         if link_produto?(absolute)
           @produtos << absolute if in_domain?(absolute)
         else

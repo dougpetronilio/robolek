@@ -39,7 +39,7 @@ module RoboLek
     context "#save_produtos" do
       it "should return produtos from mongo" do
         url = "http://www.teste.com/produto/1"
-        @db_mongo.save_produtos([url])
+        @db_mongo.save_produtos([url], "", "", "")
         produtos = @db_mongo.produtos(10)
         produtos.count.should == 1
       end

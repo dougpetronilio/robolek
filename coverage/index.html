@@ -14,7 +14,7 @@
       <img src="./assets/0.7.1/loading.gif" alt="loading"/>
     </div>
     <div id="wrapper" style="display:none;">
-      <div class="timestamp">Generated <abbr class="timeago" title="2013-10-28T17:39:37-02:00">2013-10-28T17:39:37-02:00</abbr></div>
+      <div class="timestamp">Generated <abbr class="timeago" title="2013-10-30T17:39:43-02:00">2013-10-30T17:39:43-02:00</abbr></div>
       <ul class="group_tabs"></ul>
 
       <div id="content">
@@ -31,9 +31,9 @@
   </h2>
   <a name="AllFiles"></a>
   <div>
-    <b>7</b> files in total.
-    <b>109</b> relevant lines. 
-    <span class="green"><b>109</b> lines covered</span> and
+    <b>8</b> files in total.
+    <b>134</b> relevant lines. 
+    <span class="green"><b>134</b> lines covered</span> and
     <span class="red"><b>0</b> lines missed </span>
   </div>
   <table class="file_list">
@@ -118,6 +118,16 @@
         <td>34</td>
         <td>0</td>
         <td>1.4</td>
+      </tr>
+      
+      <tr>
+        <td class="strong"><a href="#4ceeeb0e36d924ad009fbbff6ef19ffbe5ee2c1e" class="src_link" title="spec/trata_produto_spec.rb">spec/trata_produto_spec.rb</a></td>
+        <td class="green strong">100.0 %</td>
+        <td>34</td>
+        <td>25</td>
+        <td>25</td>
+        <td>0</td>
+        <td>1.1</td>
       </tr>
       
     </tbody>
@@ -399,7 +409,7 @@
         <li class="covered" data-hits="1" data-linenumber="42">
           <span class="hits">1</span>
           
-          <code class="ruby">        @db_mongo.save_produtos([url])</code>
+          <code class="ruby">        @db_mongo.save_produtos([url], &quot;&quot;, &quot;&quot;, &quot;&quot;)</code>
         </li>
       
         <li class="covered" data-hits="1" data-linenumber="43">
@@ -1119,7 +1129,7 @@
         <li class="covered" data-hits="1" data-linenumber="20">
           <span class="hits">1</span>
           
-          <code class="ruby">        TrataLink.trata_pagina(DOMINIO, &quot;#{DOMINIO}robots.txt&quot;, nil)</code>
+          <code class="ruby">        TrataLink.trata_pagina(DOMINIO, &quot;#{DOMINIO}robots.txt&quot;, nil, nil, nil, nil)</code>
         </li>
       
         <li class="never" data-hits="" data-linenumber="21">
@@ -1149,7 +1159,7 @@
         <li class="covered" data-hits="1" data-linenumber="25">
           <span class="hits">1</span>
           
-          <code class="ruby">         trata_link = TrataLink.trata_pagina(DOMINIO, &quot;#{DOMINIO}robots.txt&quot;, nil)</code>
+          <code class="ruby">         trata_link = TrataLink.trata_pagina(DOMINIO, &quot;#{DOMINIO}robots.txt&quot;, nil, nil, nil, nil)</code>
         </li>
       
         <li class="covered" data-hits="1" data-linenumber="26">
@@ -1197,7 +1207,7 @@
         <li class="covered" data-hits="1" data-linenumber="33">
           <span class="hits">1</span>
           
-          <code class="ruby">        trata_link = TrataLink.trata_pagina(DOMINIO, &quot;#{DOMINIO}robots.txt&quot;, nil)</code>
+          <code class="ruby">        trata_link = TrataLink.trata_pagina(DOMINIO, &quot;#{DOMINIO}robots.txt&quot;, nil, nil, nil, nil)</code>
         </li>
       
         <li class="covered" data-hits="1" data-linenumber="34">
@@ -1233,7 +1243,7 @@
         <li class="covered" data-hits="1" data-linenumber="39">
           <span class="hits">1</span>
           
-          <code class="ruby">        trata_link = TrataLink.trata_pagina(DOMINIO_ERROR, &quot;#{DOMINIO}robots.txt&quot;, nil)</code>
+          <code class="ruby">        trata_link = TrataLink.trata_pagina(DOMINIO_ERROR, &quot;#{DOMINIO}robots.txt&quot;, nil, nil, nil, nil)</code>
         </li>
       
         <li class="covered" data-hits="1" data-linenumber="40">
@@ -1275,7 +1285,7 @@
         <li class="covered" data-hits="1" data-linenumber="46">
           <span class="hits">1</span>
           
-          <code class="ruby">        trata_link = TrataLink.trata_pagina(DOMINIO_REDIRECIONAMENTO, &quot;#{DOMINIO}robots.txt&quot;, nil)</code>
+          <code class="ruby">        trata_link = TrataLink.trata_pagina(DOMINIO_REDIRECIONAMENTO, &quot;#{DOMINIO}robots.txt&quot;, nil, nil, nil, nil)</code>
         </li>
       
         <li class="covered" data-hits="1" data-linenumber="47">
@@ -1303,6 +1313,228 @@
         </li>
       
         <li class="never" data-hits="" data-linenumber="51">
+          
+          
+          <code class="ruby">end</code>
+        </li>
+      
+    </ol>
+  </pre>
+</div>
+      
+        <div class="source_table" id="4ceeeb0e36d924ad009fbbff6ef19ffbe5ee2c1e">
+  <div class="header">
+    <h3>spec/trata_produto_spec.rb</h3>
+    <h4><span class="green">100.0 %</span> covered</h4>
+    <div>
+      <b>25</b> relevant lines. 
+      <span class="green"><b>25</b> lines covered</span> and
+      <span class="red"><b>0</b> lines missed.</span>
+    </div>
+  </div>
+  
+  <pre>
+    <ol>
+      
+        <li class="covered" data-hits="1" data-linenumber="1">
+          <span class="hits">1</span>
+          
+          <code class="ruby">require &quot;spec_helper&quot;</code>
+        </li>
+      
+        <li class="covered" data-hits="1" data-linenumber="2">
+          <span class="hits">1</span>
+          
+          <code class="ruby">$:.unshift(File.dirname(__FILE__))</code>
+        </li>
+      
+        <li class="never" data-hits="" data-linenumber="3">
+          
+          
+          <code class="ruby"></code>
+        </li>
+      
+        <li class="covered" data-hits="1" data-linenumber="4">
+          <span class="hits">1</span>
+          
+          <code class="ruby">module RoboLek</code>
+        </li>
+      
+        <li class="covered" data-hits="1" data-linenumber="5">
+          <span class="hits">1</span>
+          
+          <code class="ruby">  describe TrataProduto do</code>
+        </li>
+      
+        <li class="covered" data-hits="1" data-linenumber="6">
+          <span class="hits">1</span>
+          
+          <code class="ruby">    before(:each) do</code>
+        </li>
+      
+        <li class="covered" data-hits="2" data-linenumber="7">
+          <span class="hits">2</span>
+          
+          <code class="ruby">      @page = StubPage.new(DOMINIO, &quot;&quot;, opcoes = {:title =&gt; &quot;teste1&quot;, :preco =&gt; &quot;R$ 100,00&quot;, :foto =&gt; &quot;foto1&quot;, :genero =&gt; &quot;Masculino&quot;, :links =&gt; []})</code>
+        </li>
+      
+        <li class="covered" data-hits="2" data-linenumber="8">
+          <span class="hits">2</span>
+          
+          <code class="ruby">      @page_error = StubPage.new(DOMINIO_ERROR, &quot;&quot;, opcoes = {:code =&gt; 400})</code>
+        </li>
+      
+        <li class="covered" data-hits="2" data-linenumber="9">
+          <span class="hits">2</span>
+          
+          <code class="ruby">      @page_redirect = StubPage.new(DOMINIO_REDIRECIONAMENTO, &quot;&quot;, opcoes = {:code =&gt; 301, :redirecionamento =&gt; DOMINIO})</code>
+        </li>
+      
+        <li class="never" data-hits="" data-linenumber="10">
+          
+          
+          <code class="ruby">    end</code>
+        </li>
+      
+        <li class="never" data-hits="" data-linenumber="11">
+          
+          
+          <code class="ruby">    </code>
+        </li>
+      
+        <li class="covered" data-hits="1" data-linenumber="12">
+          <span class="hits">1</span>
+          
+          <code class="ruby">    context &quot;#new&quot; do</code>
+        </li>
+      
+        <li class="covered" data-hits="1" data-linenumber="13">
+          <span class="hits">1</span>
+          
+          <code class="ruby">      it &quot;should complete produto with body, code, nome, preco, foto and genero&quot; do</code>
+        </li>
+      
+        <li class="covered" data-hits="1" data-linenumber="14">
+          <span class="hits">1</span>
+          
+          <code class="ruby">        trata_produto = TrataProduto.trata_produto(DOMINIO, &quot;.produto .price .new-price&quot;, &quot;.produto .foto img&quot;, &quot;.produto .genero a&quot;)</code>
+        </li>
+      
+        <li class="covered" data-hits="1" data-linenumber="15">
+          <span class="hits">1</span>
+          
+          <code class="ruby">        trata_produto.code.should == &quot;200&quot;</code>
+        </li>
+      
+        <li class="covered" data-hits="1" data-linenumber="16">
+          <span class="hits">1</span>
+          
+          <code class="ruby">        trata_produto.body.should == @page.body</code>
+        </li>
+      
+        <li class="covered" data-hits="1" data-linenumber="17">
+          <span class="hits">1</span>
+          
+          <code class="ruby">        trata_produto.nome.should == &quot;teste1&quot;</code>
+        </li>
+      
+        <li class="covered" data-hits="1" data-linenumber="18">
+          <span class="hits">1</span>
+          
+          <code class="ruby">        trata_produto.url.should == &quot;#{DOMINIO}&quot;</code>
+        </li>
+      
+        <li class="covered" data-hits="1" data-linenumber="19">
+          <span class="hits">1</span>
+          
+          <code class="ruby">        trata_produto.preco.should == &quot;R$ 100,00&quot;</code>
+        </li>
+      
+        <li class="covered" data-hits="1" data-linenumber="20">
+          <span class="hits">1</span>
+          
+          <code class="ruby">        trata_produto.foto.should == &quot;foto1&quot;</code>
+        </li>
+      
+        <li class="covered" data-hits="1" data-linenumber="21">
+          <span class="hits">1</span>
+          
+          <code class="ruby">        trata_produto.genero.should == &quot;Masculino&quot;</code>
+        </li>
+      
+        <li class="never" data-hits="" data-linenumber="22">
+          
+          
+          <code class="ruby">      end</code>
+        </li>
+      
+        <li class="never" data-hits="" data-linenumber="23">
+          
+          
+          <code class="ruby">      </code>
+        </li>
+      
+        <li class="covered" data-hits="1" data-linenumber="24">
+          <span class="hits">1</span>
+          
+          <code class="ruby">      it &quot;should not complete produto&quot; do</code>
+        </li>
+      
+        <li class="covered" data-hits="1" data-linenumber="25">
+          <span class="hits">1</span>
+          
+          <code class="ruby">        trata_produto = TrataProduto.trata_produto(DOMINIO, &quot;&quot;, &quot;&quot;, &quot;&quot;)</code>
+        </li>
+      
+        <li class="covered" data-hits="1" data-linenumber="26">
+          <span class="hits">1</span>
+          
+          <code class="ruby">        trata_produto.code.should == &quot;200&quot;</code>
+        </li>
+      
+        <li class="covered" data-hits="1" data-linenumber="27">
+          <span class="hits">1</span>
+          
+          <code class="ruby">        trata_produto.body.should == @page.body</code>
+        </li>
+      
+        <li class="covered" data-hits="1" data-linenumber="28">
+          <span class="hits">1</span>
+          
+          <code class="ruby">        trata_produto.preco.should == nil</code>
+        </li>
+      
+        <li class="covered" data-hits="1" data-linenumber="29">
+          <span class="hits">1</span>
+          
+          <code class="ruby">        trata_produto.foto.should == nil</code>
+        </li>
+      
+        <li class="covered" data-hits="1" data-linenumber="30">
+          <span class="hits">1</span>
+          
+          <code class="ruby">        trata_produto.genero.should == nil</code>
+        </li>
+      
+        <li class="never" data-hits="" data-linenumber="31">
+          
+          
+          <code class="ruby">      end</code>
+        </li>
+      
+        <li class="never" data-hits="" data-linenumber="32">
+          
+          
+          <code class="ruby">    end</code>
+        </li>
+      
+        <li class="never" data-hits="" data-linenumber="33">
+          
+          
+          <code class="ruby">  end</code>
+        </li>
+      
+        <li class="never" data-hits="" data-linenumber="34">
           
           
           <code class="ruby">end</code>

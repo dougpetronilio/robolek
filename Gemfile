@@ -4,6 +4,7 @@ gem "bson_ext"
 gem "rake"
 gem "nokogiri"
 gem "robotex"
+#gem "watir"
 
 group :test do
   gem "cucumber"

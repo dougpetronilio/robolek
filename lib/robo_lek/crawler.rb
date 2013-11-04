@@ -22,6 +22,7 @@ module RoboLek
       @lista_de_links = []
       @queue_links = Queue.new
       @paginas_extraidas = []
+      @produtos_extraidos = []
       @robotex = Robotex.new("RoboYep")
     end
     
@@ -45,13 +46,22 @@ module RoboLek
     def crawl
       carrega_lista_de_links(@count)
       @paginas_extraidas = extrai_paginas
+      carrega_produtos
+      @produtos_extraidos = extrai_produtos
     end
     
     def salva_links
       @paginas_extraidas.each do |pagina|
-        @db_mongo.save_links(pagina.links, pagina.robots, pagina.url, pagina.base_produtos) if pagina.code == "200"
-        @db_mongo.save_produtos(pagina.produtos) if pagina.code == "200"
+        @db_mongo.save_links(pagina.links, pagina.robots, pagina.url, pagina.base_produtos, pagina.base_preco, pagina.base_foto, pagina.base_genero) if pagina.code == "200"
+        @db_mongo.save_produtos(pagina.produtos, pagina.base_preco, pagina.base_foto, pagina.base_genero) if pagina.code == "200"
       end if @paginas_extraidas
+    end
+    
+    def salva_produtos
+      #puts "[salva_produtos] #{@produtos_extraidos}"
+      @produtos_extraidos.each do |produto|
+        @db_sql.save_produtos(produto.nome, produto.url, produto.foto, produto.preco, produto.genero) if produto
+      end if @produtos_extraidos
     end
     
     def loop_crawl(sinal = :next)
@@ -67,7 +77,11 @@ module RoboLek
           Benchmark.bm do |x|
             x.report("salva_links") { salva_links }
           end
+          Benchmark.bm do |x|
+            x.report("salva_produtos") { salva_produtos }
+          end
           @paginas_extraidas = []
+          @produtos_extraidos = []
           puts ""
           puts "#"*70
         end
@@ -101,7 +115,17 @@ module RoboLek
           @lista_de_links << link
           @queue_links << link
         end
-      end
+      end if links
+    end
+    
+    def carrega_produtos
+      @queue_produtos = Queue.new
+      
+      links = @db_mongo.all_produtos.to_a
+      
+      links.each do |link|
+        @queue_produtos << link
+      end if links
     end
     
     def link_liberado?(link)
@@ -134,6 +158,26 @@ module RoboLek
       
       @paginas_extraidas.uniq!
       @paginas_extraidas
+    end
+    
+    def extrai_produtos
+      @threads = []
+
+      @threads_count.times do
+        @threads << Thread.new {Tentaculo.new(@queue_produtos, @produtos_extraidos, :produto).run}
+      end
+      
+      loop do
+        if @queue_produtos.empty?
+          @threads.size.times {@queue_produtos << :FIM}
+          break
+        end
+      end
+
+      @threads.each {|thread| thread.join}
+      
+      @produtos_extraidos.uniq!
+      @produtos_extraidos
     end
   end
 end

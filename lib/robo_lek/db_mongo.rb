@@ -42,7 +42,11 @@ module RoboLek
         robots = ""
         produtos = valor[:produtos] if valor[:produtos]
         robots = valor[:robots] if valor[:robots]
-        @colecao_links.insert({:url => valor[:url], :crawled => false, :produtos => produtos, :robots => robots})
+        base_preco = valor[:base_preco] if valor[:base_preco]
+        base_foto = valor[:base_foto] if valor[:base_foto]
+        base_genero = valor[:base_genero] if valor[:base_genero]
+        
+        @colecao_links.insert({:url => valor[:url], :crawled => false, :produtos => produtos, :robots => robots, :base_preco => base_preco, :base_genero => base_genero, :base_foto => base_foto})
       rescue Mongo::OperationFailure => e
       end
     end
@@ -52,7 +56,7 @@ module RoboLek
       urls.count == 0
     end
     
-    def save_links(links, robots, crawled = '', produtos = "")
+    def save_links(links, robots, crawled = '', produtos = "", base_preco = "", base_foto = "", base_genero = "")
       links.each do |url| 
         begin
           endereco = @colecao_links.find_one({:url => url})
@@ -63,7 +67,7 @@ module RoboLek
               @colecao_links.update({:url => url}, {"$set" => {:date_saved => Time.now}})
             end
           else
-            @colecao_links.insert({:url => url, :date_saved => Time.now, :crawled => false, :produtos => produtos, :robots => robots})
+            @colecao_links.insert({:url => url, :date_saved => Time.now, :crawled => false, :produtos => produtos, :robots => robots, :base_preco => base_preco, :base_genero => base_genero, :base_foto => base_foto})
           end
         rescue Mongo::OperationFailure => e
            puts "[save_links] error #{e}"
@@ -71,13 +75,13 @@ module RoboLek
       end if links
     end
     
-    def save_produtos(links)
+    def save_produtos(links, base_preco, base_foto, base_genero)
       links.each do |url|
         begin
-          @colecao_produtos.insert({:url => url, :date_saved => Time.now})
+          @colecao_produtos.insert({:url => url, :date_saved => Time.now, :base_preco => base_preco, :base_genero => base_genero, :base_foto => base_foto})
         rescue Mongo::OperationFailure => e
-           #puts "[save_links] error #{e}"
-           @colecao_produtos.update({:url => url}, {"$set" => {:date_saved => Time.now}})
+          #puts "[save_links] error #{e}"
+          @colecao_produtos.update({:url => url}, {"$set" => {:date_saved => Time.now}})
         end
       end
     end

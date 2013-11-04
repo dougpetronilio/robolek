@@ -21,7 +21,9 @@ Dado(/^que os seguintes links corretos existem no banco de dados para robo:$/) d
         puts "[cadastro_de_links] produtos = #{line['produtos']} | #{line['produto']} | #{line['url']}"
         @robolek.insert({:url => line['url'], :produtos => line['produtos'], :robots => line['robots']})
         @lista_de_links_nas_paginas << "#{line['url']}"
-        cria_mock(line['url'], ['produtos/1'], 200)
+        @lista_de_links_nas_paginas << "http://www.teste.com/homem/teste1"
+        cria_mock(line['url'], ['produtos/1'], 200, :title => "teste1", :preco => "R$ 100,00", :foto => "foto1", :genero => "Masculino",)
+        cria_mock("http://www.teste.com/homem/teste1", [], 200)
       end
     else
       @robolek.insert({:url => line['url'], :robots => line['robots']})

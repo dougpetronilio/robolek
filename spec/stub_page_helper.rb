@@ -11,6 +11,10 @@ module RoboLek
       @nome = nome
       @links = [opcoes[:links]].flatten if opcoes.has_key?(:links)
       @hrefs = [opcoes[:hrefs]].flatten if opcoes.has_key?(:hrefs)
+      @title = opcoes[:title] if opcoes.has_key?(:title)
+      @preco = opcoes[:preco] if opcoes.has_key?(:preco)
+      @foto = opcoes[:foto] if opcoes.has_key?(:foto)
+      @genero = opcoes[:genero] if opcoes.has_key?(:genero)
       @body = opcoes[:body]
       @code = 200
       @code = opcoes[:code] if opcoes.has_key?(:code)
@@ -41,10 +45,36 @@ module RoboLek
     
     private
     def cria_body
-      @body = "<html><body>"
+      if @title
+        @body = "<html><head><title>#{@title}</title></head><body>"
+      else
+        @body = "<html><body>"
+      end
       @links.each { |link| @body += "<a href=\"#{@dominio}#{link}\"></a>"} if @links
+      @body += "<div class='produto'>"
+      @body += "<div class='teste'>"
+      @body += "<form name='addToCart' action='/checkout/add-to-cart.jsp' method='GET'>"
+      if @preco
+        @body += "<div class='price'>"
+        @body += "<strong class='new-price'>#{@preco}</strong>"
+        @body += "</div>"
+      end
+      if @foto
+        @body += "<div class='foto'>"
+        @body += "<img src='#{@foto}'>"
+        @body += "</div>"
+      end
+      if @genero
+        @body += "<div class='genero'>"
+        @body += "<a href='/homem/teste1'>#{@genero}</a>"
+        @body += "</div>"
+      end
+      @body += "</form>"
+      @body += "</div>"
+      @body += "</div>"
       @hrefs.each { |href| @body += "<a href=\"#{link}\"></a>"} if @hrefs
       @body += "</body></html>"
+      puts "[cria_body] #{@body}"
     end
     
     def cria_stub

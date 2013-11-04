@@ -13,7 +13,19 @@ module RoboLek
     end
     
     def insert(produto, url, foto, preco, genero)
-      @db.execute("insert into produtos (produto, url, foto, preco, genero) values(?, ?, ?, ?, ?)", [produto, url, foto, preco, genero])
+      begin
+        @db.execute("insert into produtos (nome, link, foto, preco, genero, created_at) values(?, ?, ?, ?, ?, ?, ?)", [produto, url, foto, preco, genero, "#{Time.now}", "#{Time.now}"])
+      rescue SQLite3::ConstraintException => e
+        puts "[insert] #{e}"
+      end
+    end
+    
+    def save_produtos(produto, url, foto, preco, genero)
+      begin
+        @db.execute("insert into produtos (nome, link, foto, preco, genero, created_at, updated_at) values(?, ?, ?, ?, ?, ?, ?)", [produto, url, foto, preco, genero, "#{Time.now}", "#{Time.now}"])
+      rescue SQLite3::ConstraintException => e
+        puts "[save_produtos] #{e} -- [#{url}]"
+      end
     end
     
     def all_produtos
