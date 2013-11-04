@@ -89,12 +89,16 @@ module RoboLek
     def pega_genero
       if @base_genero != ""
         code = doc.at_css(@base_genero).text if doc && doc.at_css(@base_genero)
-        if code.downcase.include?("feminino") || code.downcase.include?("mulher") || code.downcase.include?("woman")
-          @genero = "Feminino"
-        elsif code.downcase.include?("masculino") || code.downcase.include?("homem") || code.downcase.include?("man")
-          @genero = "Masculino"
-        elsif code.downcase.include?("infantil") || code.downcase.include?("criança")
-          @genero = "Infantil"
+        if code
+          if code.downcase.include?("feminino") || code.downcase.include?("mulher") || code.downcase.include?("woman")
+            @genero = "Feminino"
+          elsif code.downcase.include?("masculino") || code.downcase.include?("homem") || code.downcase.include?("man")
+            @genero = "Masculino"
+          elsif code.downcase.include?("infantil") || code.downcase.include?("criança")
+            @genero = "Infantil"
+          else
+            @genero = ""
+          end
         else
           @genero = ""
         end

@@ -27,7 +27,7 @@ module RoboLek
         trata_produto.body.should == @page.body
         trata_produto.preco.should == nil
         trata_produto.foto.should == nil
-        trata_produto.genero.should == nil
+        trata_produto.genero.should == ""
       end
     end
   end
