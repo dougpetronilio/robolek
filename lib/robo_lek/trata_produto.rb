@@ -39,12 +39,12 @@ module RoboLek
           @foto = pega_foto
           @genero = pega_genero
         when (300..307)
-          puts "#"*50
-          puts "[trata_produto][extrai_links] 1++++ @url = #{@url}"
+          #puts "#"*50
+          #puts "[trata_produto][extrai_links] 1++++ @url = #{@url}"
           u = response['location']
           @url = URI.join(@url, u).to_s
-          puts "[trata_produto][extrai_links] 2---- @url = #{@url}"
-          puts "#"*50
+          #puts "[trata_produto][extrai_links] 2---- @url = #{@url}"
+          #puts "#"*50
           response = abre_pagina(@url)
           if response
             @code = response.code
@@ -53,6 +53,7 @@ module RoboLek
               @nome = pega_nome
               @preco = pega_preco
               @foto = pega_foto
+              @genero = pega_genero
             end
           end
         when (400..417)
@@ -76,8 +77,19 @@ module RoboLek
     end
     
     def pega_foto
-      if @base_foto != ""
-        @foto = doc.at_css(@base_foto)['src'] if doc && doc.at_css(@base_foto)
+      if @base_foto && @base_foto != ""
+        type = @base_foto[-3,3] if @base_foto.length > 3
+        base = @base_foto[0, @base_foto.length-4] if @base_foto.length > 4
+        puts "[pega_foto] type = #{type} | base = #{base}"
+        if type == "rel"
+          @foto = doc.at_css(base)[type] if doc && doc.at_css(base)
+        else
+          @foto = doc.at_css(@base_foto)["src"] if doc && doc.at_css(@base_foto)
+        end
+        puts "[pega_foto] html = #{doc.at_css(@base_foto)}"
+        if @foto && in_domain?(@foto) == false
+          @foto = "http://#{URI(@url).host}#{@foto}" if @foto.include?("http://") == false
+        end  
         puts "[pega_foto] foto = #{@foto}"
       else
         puts "[pega_foto] @base_foto = nil"
@@ -87,20 +99,28 @@ module RoboLek
     end
     
     def pega_genero
-      if @base_genero != ""
-        code = doc.at_css(@base_genero).text if doc && doc.at_css(@base_genero)
-        if code
-          if code.downcase.include?("feminino") || code.downcase.include?("mulher") || code.downcase.include?("woman")
-            @genero = "Feminino"
-          elsif code.downcase.include?("masculino") || code.downcase.include?("homem") || code.downcase.include?("man")
-            @genero = "Masculino"
-          elsif code.downcase.include?("infantil") || code.downcase.include?("criança")
-            @genero = "Infantil"
+      if @base_genero && @base_genero != ""
+        if @base_genero.downcase == "feminino"
+          @genero = "Feminino"
+        elsif @base_genero.downcase == "masculino"
+          @genero = "Masculino"
+        elsif @base_genero.downcase == "infantil"
+          @genero = "Infantil"
+        else
+          code = doc.at_css(@base_genero).text if doc && doc.at_css(@base_genero)
+          if code
+            if code.downcase.include?("feminino") || code.downcase.include?("mulher") || code.downcase.include?("mulheres") || code.downcase.include?("woman")
+              @genero = "Feminino"
+            elsif code.downcase.include?("masculino") || code.downcase.include?("homem") || code.downcase.include?("homens") || code.downcase.include?("man")
+              @genero = "Masculino"
+            elsif code.downcase.include?("infantil") || code.downcase.include?("criança")
+              @genero = "Infantil"
+            else
+              @genero = ""
+            end
           else
             @genero = ""
           end
-        else
-          @genero = ""
         end
         puts "[pega_genero] genero = #{@genero}"
       else
@@ -165,7 +185,19 @@ module RoboLek
     end
     
     def in_domain?(uri)
-      URI(uri).host == URI(@url).host
+      #puts "[in_domain?] url = #{@url.class} | uri = #{uri.class}"
+      if URI(uri).host && URI(@url).host
+        #puts "[in_domain?] #{URI(uri).host} == #{URI(@url).host}"
+        if URI(uri).host == URI(@url).host
+          return true
+        elsif URI(uri).host.include?(URI(@url).host)
+          #puts "[in_domain?] #{uri} == #{@url}"
+          return true 
+        else
+          return false
+        end
+      end
+      return false
     end
   end
 end

@@ -17,7 +17,7 @@ module RoboLek
         trata_produto.nome.should == "teste1"
         trata_produto.url.should == "#{DOMINIO}"
         trata_produto.preco.should == "R$ 100,00"
-        trata_produto.foto.should == "foto1"
+        trata_produto.foto.should == "#{DOMINIO}foto1"
         trata_produto.genero.should == "Masculino"
       end
       

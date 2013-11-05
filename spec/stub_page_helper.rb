@@ -61,7 +61,7 @@ module RoboLek
       end
       if @foto
         @body += "<div class='foto'>"
-        @body += "<img src='#{@foto}'>"
+        @body += "<img src='/#{@foto}'>"
         @body += "</div>"
       end
       if @genero

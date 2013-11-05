@@ -31,19 +31,23 @@ module RoboLek
       response = abre_pagina(link)
       if response
         @code = response.code
-      
+        #puts "[extrai_links] code = #{@code}"
         case @code.to_i
         when (200..206)
           @body = response.body
           @links = pega_links
         when (300..307)
-          @url = response['location']
-          response = abre_pagina(@url)
-          if response
-            @code = response.code
-            if (200..206).include?(@code.to_i)
-              @body = response.body
-              @links = pega_links
+          while (300..307).include?(@code.to_i)
+            @url = response['location']
+            response = abre_pagina(@url)
+            if response
+              @code = response.code
+              if (200..206).include?(@code.to_i)
+                @body = response.body
+                @links = pega_links
+              end
+            else
+              @code = "401"
             end
           end
         when (400..417)
@@ -120,7 +124,18 @@ module RoboLek
     end
     
     def in_domain?(uri)
-      URI(uri).host == URI(@url).host
+      if URI(uri).host && URI(@url).host
+        #puts "[in_domain?] #{URI(uri).host} == #{URI(@url).host}"
+        if URI(uri).host == URI(@url).host
+          return true
+        elsif URI(uri).host.include?(URI(@url).host)
+          #puts "[in_domain?] #{uri} == #{@url}"
+          return true 
+        else
+          return false
+        end
+      end
+      return false
     end
   end
 end
