@@ -37,7 +37,9 @@ module RoboLek
           @body = response.body
           @links = pega_links
         when (300..307)
-          while (300..307).include?(@code.to_i)
+          contador = 1
+          while (300..307).include?(@code.to_i) && contador < 10
+            puts "[extrai_links] code = #{@code}"
             @url = response['location']
             response = abre_pagina(@url)
             if response
@@ -49,6 +51,7 @@ module RoboLek
             else
               @code = "401"
             end
+            contador += 1
           end
         when (400..417)
           STDOUT.puts "Erro na requisição"
@@ -61,7 +64,7 @@ module RoboLek
     def abre_pagina(link)
       uri_encode = URI.encode(link)
       uri = URI.parse(uri_encode)
-      #puts "[abre_pagina] link = #{link}"
+      puts "[abre_pagina] link = #{link}"
       retries = 0
       begin
         req = Net::HTTP::Get.new(uri)

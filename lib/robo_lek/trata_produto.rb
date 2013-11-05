@@ -132,6 +132,7 @@ module RoboLek
     end
     
     def pega_nome
+      puts "[pega_nome] nome = [#{doc.title}]"
       doc.title
     end
     
