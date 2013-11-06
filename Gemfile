@@ -12,10 +12,10 @@ group :test do
   gem "webmock"
   gem "simplecov"
   gem "simplecov-rcov"
+  gem "sqlite3"
 end
 
 group :db do
   gem "mongo"
-  gem "sqlite3"
   gem "pg"
 end
