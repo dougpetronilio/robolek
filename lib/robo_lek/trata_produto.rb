@@ -7,11 +7,12 @@ module RoboLek
     
     attr_reader :nome, :url, :foto, :preco, :genero, :code, :body
     
-    def initialize(link, base_preco, base_foto, base_genero)
+    def initialize(link, base_preco, base_foto, base_genero, base_nome)
       @url = link
       @base_preco = base_preco
       @base_foto = base_foto
       @base_genero = base_genero
+      @base_nome = base_nome
       @nome = ""
       @foto = ""
       @preco = ""
@@ -20,8 +21,8 @@ module RoboLek
       extrai_links(@url)
     end
     
-    def self.trata_produto(link, base_preco = "", base_foto = "", base_genero = "")
-      self.new(link, base_preco, base_foto, base_genero)
+    def self.trata_produto(link, base_preco = "", base_foto = "", base_genero = "", base_nome = "")
+      self.new(link, base_preco, base_foto, base_genero, base_nome)
     end
     
     private
@@ -68,9 +69,9 @@ module RoboLek
       #puts "[pega_preco] base_preco = #{@base_preco}"
       if @base_preco != ""
         @preco = doc.at_css(@base_preco).text if doc && doc.at_css(@base_preco)
-        puts "[pega_preco] preco = #{@preco}"
+        #puts "[pega_preco] preco = #{@preco}"
       else
-        puts "[pega_preco] @base_preco = nil"
+        #puts "[pega_preco] @base_preco = nil"
         @preco = nil
       end
       @preco
@@ -88,7 +89,7 @@ module RoboLek
         end
         puts "[pega_foto] html = #{doc.at_css(@base_foto)}"
         if @foto && in_domain?(@foto) == false
-          @foto = "http://#{URI(@url).host}#{@foto}" if @foto.include?("http://") == false
+          @foto = "http://#{URI(@url).host}#{@foto}" if @foto.include?("//") == false && @foto != ""
         end  
         puts "[pega_foto] foto = #{@foto}"
       else
@@ -122,10 +123,10 @@ module RoboLek
             @genero = ""
           end
         end
-        puts "[pega_genero] genero = #{@genero}"
+        #puts "[pega_genero] genero = #{@genero}"
       else
         @genero = ''
-        puts "[pega_genero] @base_genero = ''"
+        #puts "[pega_genero] @base_genero = ''"
         @genero = ""
       end
       @genero
@@ -133,7 +134,13 @@ module RoboLek
     
     def pega_nome
       puts "[pega_nome] nome = [#{doc.title}]"
-      doc.title
+      if @base_nome && @base_nome != ""
+        nome = doc.at_css(@base_nome).text if doc && doc.at_css(@base_nome)
+      else
+        nome = doc.title
+      end
+      puts "[pega_nome] nome = #{nome}"
+      nome
     end
     
     def abre_pagina(link)

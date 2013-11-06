@@ -19,7 +19,7 @@ Dado(/^que os seguintes links corretos existem no banco de dados para robo:$/) d
         cria_mock(line['url'], [], 200)
       else
         puts "[cadastro_de_links] produtos = #{line['produtos']} | #{line['produto']} | #{line['url']}"
-        @robolek.insert({:url => line['url'], :produtos => line['produtos'], :robots => line['robots']})
+        @robolek.insert({:url => line['url'], :produtos => line['produtos'], :robots => line['robots'], :base_preco => ".produto .price .new-price", :base_foto => ".produto .foto img", :base_genero => ".produto .genero a"})
         @lista_de_links_nas_paginas << "#{line['url']}"
         @lista_de_links_nas_paginas << "http://www.teste.com/homem/teste1"
         cria_mock(line['url'], ['produtos/1'], 200, :title => "teste1", :preco => "R$ 100,00", :foto => "foto1", :genero => "Masculino",)
@@ -125,7 +125,7 @@ Então(/^produtos devem estar no banco de dados$/) do
   
   lista_de_produtos_banco_ordenada = lista_de_produtos_banco_ordenada.sort
   lista_de_produtos_ordenada = @lista_de_produtos.sort
-  #STDOUT.puts "#{lista_de_produtos_ordenada} == #{lista_de_produtos_banco_ordenada}"
+  STDOUT.puts "#{lista_de_produtos_ordenada} == #{lista_de_produtos_banco_ordenada}"
   lista_de_produtos_ordenada.should == lista_de_produtos_banco_ordenada
 end
 

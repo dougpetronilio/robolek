@@ -52,8 +52,8 @@ module RoboLek
     
     def salva_links
       @paginas_extraidas.each do |pagina|
-        @db_mongo.save_links(pagina.links, pagina.robots, pagina.url, pagina.base_produtos, pagina.base_preco, pagina.base_foto, pagina.base_genero) if pagina.code == "200"
-        @db_mongo.save_produtos(pagina.produtos, pagina.base_preco, pagina.base_foto, pagina.base_genero) if pagina.code == "200"
+        @db_mongo.save_links(pagina.links, pagina.robots, pagina.url, pagina.base_produtos, pagina.base_preco, pagina.base_foto, pagina.base_genero, pagina.base_nome) if pagina.code == "200"
+        @db_mongo.save_produtos(pagina.produtos, pagina.base_preco, pagina.base_foto, pagina.base_genero, pagina.base_nome) if pagina.code == "200"
       end if @paginas_extraidas
     end
     

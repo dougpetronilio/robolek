@@ -4,9 +4,9 @@ require 'nokogiri'
 module RoboLek
   class TrataLink
     
-    attr_reader :code, :body, :links, :pagina, :url, :base_produtos, :produtos, :robots, :base_preco, :base_foto, :base_genero
+    attr_reader :code, :body, :links, :pagina, :url, :base_produtos, :produtos, :robots, :base_preco, :base_foto, :base_genero, :base_nome
     
-    def initialize(link, robots, base_produtos, base_preco, base_foto, base_genero)
+    def initialize(link, robots, base_produtos, base_preco, base_foto, base_genero, base_nome)
       @url = link
       @code = ""
       @body = ""
@@ -16,13 +16,14 @@ module RoboLek
       @base_preco = base_preco
       @base_foto = base_foto
       @base_genero = base_genero
+      @base_nome = base_nome
       @robots = robots
       extrai_links(link)
       @pagina = Pagina.new(@url, @code, @body, @links, @base_produtos, @produtos)
     end
     
-    def self.trata_pagina(link, robots, produtos = "", base_preco = "", base_foto = "", base_genero = "")
-      self.new(link, robots, produtos, base_preco, base_foto, base_genero)
+    def self.trata_pagina(link, robots, produtos = "", base_preco = "", base_foto = "", base_genero = "", base_nome = "")
+      self.new(link, robots, produtos, base_preco, base_foto, base_genero, base_nome)
     end
     
     private
@@ -39,7 +40,7 @@ module RoboLek
         when (300..307)
           contador = 1
           while (300..307).include?(@code.to_i) && contador < 10
-            puts "[extrai_links] code = #{@code}"
+            #puts "[extrai_links] code = #{@code}"
             @url = response['location']
             response = abre_pagina(@url)
             if response
@@ -64,7 +65,7 @@ module RoboLek
     def abre_pagina(link)
       uri_encode = URI.encode(link)
       uri = URI.parse(uri_encode)
-      puts "[abre_pagina] link = #{link}"
+      #puts "[abre_pagina] link = #{link}"
       retries = 0
       begin
         req = Net::HTTP::Get.new(uri)

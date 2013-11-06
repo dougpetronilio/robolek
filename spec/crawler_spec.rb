@@ -16,7 +16,7 @@ module RoboLek
         stub_request(:get, "#{dominio}robots.txt").with(:headers => {'Accept'=>'*/*', 'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3', 'User-Agent'=>'RoboYep'}).to_return({:content_type => "text"}, :status => [200, "OK"])
         db.should_receive(:links).with(1).and_return([{"url" => dominio, "robots" => "#{dominio}robots.txt"}])
         
-        TrataLink.should_receive(:trata_pagina).with(dominio, "#{dominio}robots.txt", "", nil, nil, nil)
+        TrataLink.should_receive(:trata_pagina).with(dominio, "#{dominio}robots.txt", "", nil, nil, nil, nil)
         
         @robo = RoboLek.start(db, db_sql, 1)
         @robo.crawl
@@ -32,7 +32,7 @@ module RoboLek
 
         db.should_receive(:links).with(1).and_return([{"url" => dominio, "robots" => "#{dominio}robots.txt"}])
         
-        pages.each { |page| TrataLink.should_receive(:trata_pagina).with(dominio, "#{dominio}robots.txt", "", nil, nil, nil).and_return(trata_link) }
+        pages.each { |page| TrataLink.should_receive(:trata_pagina).with(dominio, "#{dominio}robots.txt", "", nil, nil, nil, nil).and_return(trata_link) }
         
         @robo = RoboLek.start(db, db_sql, 1)
         @robo.crawl
@@ -50,8 +50,8 @@ module RoboLek
         pagina.stub(links: pages[0].links_url)
         trata_link.stub(pagina: pagina)
         
-        TrataLink.should_receive(:trata_pagina).with(pages[0].dominio, "#{dominio}robots.txt", "", nil, nil, nil).and_return(trata_link)
-        TrataLink.should_receive(:trata_pagina).with(pages[1].dominio, "#{dominio2}robots.txt", "", nil, nil, nil).and_return(trata_link)
+        TrataLink.should_receive(:trata_pagina).with(pages[0].dominio, "#{dominio}robots.txt", "", nil, nil, nil, nil).and_return(trata_link)
+        TrataLink.should_receive(:trata_pagina).with(pages[1].dominio, "#{dominio2}robots.txt", "", nil, nil, nil, nil).and_return(trata_link)
         
         @robo = RoboLek.start(db, db_sql, 1)
         @robo.crawl
@@ -65,12 +65,12 @@ module RoboLek
         pages = []
         pages << StubPage.new(dominio, "", :links => ['teste1', 'teste2'])
         
-        pagina.stub(links: pages[0].links_url, code: "200", :url => dominio, :base_produtos => "", :robots => "#{dominio}robots.txt", base_preco: "", base_foto: "", base_genero: "")
+        pagina.stub(links: pages[0].links_url, code: "200", :url => dominio, :base_produtos => "", :robots => "#{dominio}robots.txt", base_preco: "", base_foto: "", base_genero: "", base_nome: "")
         
         db.should_receive(:links).with(1).and_return([{"url" => dominio, "robots" => "#{dominio}robots.txt"}])
         
-        pages.each { |page| TrataLink.should_receive(:trata_pagina).with(dominio, "#{dominio}robots.txt", "", nil, nil, nil).and_return(pagina) }
-        pages.each { |page| db.should_receive(:save_links).with(pagina.links, "#{dominio}robots.txt", dominio, "", "", "", "") }
+        pages.each { |page| TrataLink.should_receive(:trata_pagina).with(dominio, "#{dominio}robots.txt", "", nil, nil, nil, nil).and_return(pagina) }
+        pages.each { |page| db.should_receive(:save_links).with(pagina.links, "#{dominio}robots.txt", dominio, "", "", "", "", "") }
 
         @robo = RoboLek.start(db, db_sql, 1)
         @robo.crawl
@@ -92,11 +92,11 @@ module RoboLek
         
         @robo = RoboLek.start(db, db_sql)
         
-        pagina.stub(links: pages[0].links_url, code: "200", :url => dominio, :base_produtos => "", :robots => "#{dominio}robots.txt", base_preco: "", base_foto: "", base_genero: "")
+        pagina.stub(links: pages[0].links_url, code: "200", :url => dominio, :base_produtos => "", :robots => "#{dominio}robots.txt", base_preco: "", base_foto: "", base_genero: "", base_nome: "")
         
-        TrataLink.should_receive(:trata_pagina).with(pages[0].dominio, "#{dominio}robots.txt", "", nil, nil, nil).and_return(pagina)
+        TrataLink.should_receive(:trata_pagina).with(pages[0].dominio, "#{dominio}robots.txt", "", nil, nil, nil, nil).and_return(pagina)
         
-        db.should_receive(:save_links).with(pages[0].links_url, "#{dominio}robots.txt", dominio, "", "", "", "")
+        db.should_receive(:save_links).with(pages[0].links_url, "#{dominio}robots.txt", dominio, "", "", "", "", "")
         @robo.loop_crawl(:next)
       end
       
@@ -112,11 +112,11 @@ module RoboLek
         
         @robo = RoboLek.start(db, db_sql)
         
-        pagina.stub(links: [], :url => dominio, code: "200", :produtos => ["#{dominio}produto/teste2"], base_preco: "", base_foto: "", base_genero: "")
+        pagina.stub(links: [], :url => dominio, code: "200", :produtos => ["#{dominio}produto/teste2"], base_preco: "", base_foto: "", base_genero: "", base_nome: "")
         
-        TrataLink.should_receive(:trata_pagina).with("#{dominio}", "#{dominio}robots.txt", "#{dominio}produto/", nil, nil, nil).and_return(pagina)
+        TrataLink.should_receive(:trata_pagina).with("#{dominio}", "#{dominio}robots.txt", "#{dominio}produto/", nil, nil, nil, nil).and_return(pagina)
         
-        db.should_receive(:save_produtos).with(["#{dominio}produto/teste2"], "", "", "")
+        db.should_receive(:save_produtos).with(["#{dominio}produto/teste2"], "", "", "", "")
         @robo.loop_crawl(:next)
       end
       
@@ -135,7 +135,7 @@ module RoboLek
         
         produto.stub(nome: "nome", url: "#{dominio}produtos/teste1", foto: "foto", preco: "100", genero: "Feminino")
         
-        TrataProduto.should_receive(:trata_produto).with("#{dominio}produtos/teste1", nil, nil, nil).and_return(produto)
+        TrataProduto.should_receive(:trata_produto).with("#{dominio}produtos/teste1", nil, nil, nil, nil).and_return(produto)
         
         db_sql.should_receive(:save_produtos).with("nome", "#{dominio}produtos/teste1", "foto", "100", "Feminino")
         @robo.loop_crawl(:next)
