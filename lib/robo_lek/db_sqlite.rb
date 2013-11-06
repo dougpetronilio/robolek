@@ -3,7 +3,7 @@ require "sqlite3"
 module RoboLek
   
   def self.DBSqlite(db = nil)
-    db ||= SQLite3::Database.new "db/test.sqlite3" 
+    db ||= SQLite3::Database.new "../estilooks/db/test.sqlite3" 
     self::DBSqlite.new(db)
   end
   
@@ -14,7 +14,7 @@ module RoboLek
     
     def insert(produto, url, foto, preco, genero)
       begin
-        @db.execute("insert into produtos (nome, link, foto, preco, genero, created_at) values(?, ?, ?, ?, ?, ?, ?)", [produto, url, foto, preco, genero, "#{Time.now}", "#{Time.now}"])
+        @db.execute("insert into produtos (nome, link, foto, preco, genero, created_at, updated_at) values(?, ?, ?, ?, ?, ?, ?)", [produto, url, foto, preco, genero, "#{Time.now}", "#{Time.now}"])
       rescue SQLite3::ConstraintException => e
         puts "[insert] #{e}"
       end
