@@ -6,7 +6,7 @@ end
 module RoboLek
   
   def self.DBSqlite(db = nil)
-    db ||= SQLite3::Database.new "db/development.sqlite3" 
+    db ||= SQLite3::Database.new "db/test.sqlite3" 
     self::DBSqlite.new(db)
   end
   
