@@ -1,4 +1,7 @@
-require "sqlite3"
+begin
+  require "sqlite3"
+rescue LoadError
+end
 
 module RoboLek
   

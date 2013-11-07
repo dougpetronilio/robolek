@@ -4,7 +4,8 @@ require "robo_lek/crawler"
 require "robo_lek/db_mongo"
 begin
   require "robo_lek/db_sqlite"
-rescue
+rescue LoadError
+  
 end
 require "robo_lek/db_postgres"
 require "robo_lek/pagina"
