@@ -3,14 +3,17 @@ require "mongo"
 module RoboLek
   
   def self.DBMongo(db_mongo = nil, nome = nil, url = nil)
-    if url == nil
+    if url
+      uri = URI.parse(url)
+      nome = uri.path.gsub(/^\//, '')
+      db_mongo ||= Mongo::Connection.new(uri.host, uri.port).db(nome)
+      db_mongo.authenticate(uri.user, uri.password) unless (uri.user.nil? || uri.user.nil?)
+    else
       if nome
         db_mongo ||= Mongo::Connection.new.db("#{nome}") if nome
       else
         db_mongo ||= Mongo::Connection.new.db('robolek')
       end
-    else
-      db_mongo ||=  Mongo::MongoClient.from_uri(url).db("#{nome}")
     end
     
     raise "Necessário ter o banco de dados MongoDb instalado." unless db_mongo.is_a?(Mongo::DB)
@@ -26,7 +29,7 @@ module RoboLek
       @db_mongo = db_mongo
       @colecao_links = @db_mongo['paginas']
       @colecao_produtos = @db_mongo['produtos']
-      @colecao_produtos.ensure_index(:url, :unique => true)
+      #@colecao_produtos.ensure_index(:url, :unique => true)
     end
     
     def links(count)
