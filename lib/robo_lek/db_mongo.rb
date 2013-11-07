@@ -2,8 +2,9 @@ require "mongo"
 
 module RoboLek
   
-  def self.DBMongo(db_mongo = nil)
-    db_mongo ||= Mongo::Connection.new.db('robolek')
+  def self.DBMongo(db_mongo = nil, nome = nil)
+    db_mongo ||= Mongo::Connection.new.db('robolek') if nome == nil
+    db_mongo ||= Mongo::Connection.new.db('nome') if nome
     raise "Necessário ter o banco de dados MongoDb instalado." unless db_mongo.is_a?(Mongo::DB)
     self::DBMongo.new(db_mongo)
   end
