@@ -59,7 +59,12 @@ module RoboLek
         base_genero = valor[:base_genero] if valor[:base_genero]
         base_nome = valor[:base_nome] if valor[:base_nome]
         
-        @colecao_links.insert({:url => valor[:url], :crawled => false, :produtos => produtos, :robots => robots, :base_preco => base_preco, :base_genero => base_genero, :base_foto => base_foto, :base_nome => base_nome})
+        endereco = @colecao_links.find_one({:url => valor[:url]})
+        if endereco && endereco['url']
+          puts "[insert] url existe #{endereco['url']}"
+        else
+          @colecao_links.insert({:url => valor[:url], :crawled => false, :produtos => produtos, :robots => robots, :base_preco => base_preco, :base_genero => base_genero, :base_foto => base_foto, :base_nome => base_nome})
+        end
       rescue Mongo::OperationFailure => e
       end
     end

@@ -22,7 +22,7 @@ robolek.insert({:url => "http://www.netshoes.com.br/", :produtos => "(http://www
 contador = 0
 Benchmark.bm do |x|
   x.report("while") do
-    while(contador < 10)
+    while(contador < 1)
       puts "contador = #{contador}"
       Benchmark.bm do |x|
         x.report("loop_crawl") {robolek.loop_crawl(:next)}

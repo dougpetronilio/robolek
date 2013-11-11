@@ -16,7 +16,7 @@
   },
   "RSpec": {
     "coverage": {
-      "/Users/douglaspetronilio/Google Drive/startups/estilooks/estilooks/robolek/spec/db_mongo_spec.rb": [
+      "/Users/douglaspetronilio/Google Drive/startups/estilooks/robolek/spec/db_mongo_spec.rb": [
         1,
         1,
         null,
@@ -66,7 +66,7 @@
         null,
         null
       ],
-      "/Users/douglaspetronilio/Google Drive/startups/estilooks/estilooks/robolek/spec/db_postgres_spec.rb": [
+      "/Users/douglaspetronilio/Google Drive/startups/estilooks/robolek/spec/db_postgres_spec.rb": [
         1,
         1,
         null,
@@ -75,7 +75,7 @@
         null,
         null
       ],
-      "/Users/douglaspetronilio/Google Drive/startups/estilooks/estilooks/robolek/spec/db_sqlite_spec.rb": [
+      "/Users/douglaspetronilio/Google Drive/startups/estilooks/robolek/spec/db_sqlite_spec.rb": [
         1,
         1,
         null,
@@ -84,7 +84,7 @@
         null,
         null
       ],
-      "/Users/douglaspetronilio/Google Drive/startups/estilooks/estilooks/robolek/spec/pagina_spec.rb": [
+      "/Users/douglaspetronilio/Google Drive/startups/estilooks/robolek/spec/pagina_spec.rb": [
         1,
         1,
         null,
@@ -109,7 +109,7 @@
         null,
         null
       ],
-      "/Users/douglaspetronilio/Google Drive/startups/estilooks/estilooks/robolek/spec/produto_spec.rb": [
+      "/Users/douglaspetronilio/Google Drive/startups/estilooks/robolek/spec/produto_spec.rb": [
         1,
         1,
         null,
@@ -134,7 +134,7 @@
         null,
         null
       ],
-      "/Users/douglaspetronilio/Google Drive/startups/estilooks/estilooks/robolek/spec/robo_lek_spec.rb": [
+      "/Users/douglaspetronilio/Google Drive/startups/estilooks/robolek/spec/robo_lek_spec.rb": [
         1,
         1,
         null,
@@ -152,7 +152,7 @@
         null,
         null
       ],
-      "/Users/douglaspetronilio/Google Drive/startups/estilooks/estilooks/robolek/spec/trata_link_spec.rb": [
+      "/Users/douglaspetronilio/Google Drive/startups/estilooks/robolek/spec/trata_link_spec.rb": [
         1,
         1,
         null,
@@ -205,7 +205,7 @@
         null,
         null
       ],
-      "/Users/douglaspetronilio/Google Drive/startups/estilooks/estilooks/robolek/spec/trata_produto_spec.rb": [
+      "/Users/douglaspetronilio/Google Drive/startups/estilooks/robolek/spec/trata_produto_spec.rb": [
         1,
         1,
         null,
@@ -242,6 +242,6 @@
         null
       ]
     },
-    "timestamp": 1383774117
+    "timestamp": 1384188172
   }
 }
