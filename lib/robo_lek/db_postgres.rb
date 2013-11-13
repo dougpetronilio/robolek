@@ -2,7 +2,7 @@ require "pg"
 
 module RoboLek
   def self.DBPostgres(db = nil)
-     db ||= PG.connect( dbname: 'd371m3gpvf3lid', user: "tjqnwfwskxddun", password: "3EGnagC_kYTOAmGlqTfnMtSnOH", host: "ec2-54-225-255-208.compute-1.amazonaws.com", port: "5432")
+     db ||= PG.connect( dbname: 'dccqaar3lvd511', user: "u66vtr6omjulmn", password: "p6k2lfqdp8g6sla381bss3sli40", host: "ec2-54-204-37-136.compute-1.amazonaws.com", port: "5442")
      self::DBPostgres.new(db)
   end
   
