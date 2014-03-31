@@ -8,6 +8,8 @@ require "benchmark"
 robolek = RoboLek.start(db = RoboLek.DBMongo(nil, "robolek", "mongodb://heroku:robo2013lek@paulo.mongohq.com:10076/app19255853"), db_sql = RoboLek.DBPostgres)
 #robolek = RoboLek.start
 
+robolek.clean_db
+
 #robolek.insert({:url => "http://www.stoza.com.br/", :produtos => "(http://www.stoza.com.br/camiseta/)(.+)", :robots => "http://www.stoza.com.br/robots.txt", :base_preco => ".container .content .summary .price .amount", :base_foto => ".container .row-fluid .span6 .flexslider_galeria .slides img", :base_genero => "", :base_nome => ""})
 robolek.insert({:url => "http://www.farfetch.com.br/", :produtos => "(http://www.farfetch.com.br/shopping/)(.+)(storeid=)(.+)", :robots => "http://www.farfetch.com.br/robots.txt", :base_preco => ".content .container #productDescriptionWrapper #productItemDesc #ContentPlaceBody_TemplateBody_lbPrice", :base_foto => ".content .container #productZoomWrapper #productZoomImg #productZoomImgCarousel .productZoomImgCarousel-IMG img", :base_genero => ".content .container .contentBreadcrumbs", :base_nome => ".content .container #productDescriptionWrapper #productItemDesc .productFriendly"})
 robolek.insert({:url => "http://store.ellus.com/", :produtos => "(http://store.ellus.com/product/)(.+)", :robots => "http://store.ellus.com/robots.txt", :base_preco => ".provador .itemWrapper .prodTxtWrapper .buyArea #prodform .prodBuyArea .precoFinal", :base_foto => ".provador .itemWrapper .itemImg .mainPic img", :base_genero => "#content #nav #navRoot", :base_nome => ".provador .itemWrapper .prodTxtWrapper .itemNome"})
