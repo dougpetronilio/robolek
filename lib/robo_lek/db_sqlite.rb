@@ -15,18 +15,18 @@ module RoboLek
       @db = db
     end
     
-    def insert(produto, url, foto, preco, genero)
+    def insert(produto, url, foto, preco, genero, tamanho)
       begin
-        @db.execute("insert into produtos (nome, link, foto, preco, genero, created_at, updated_at) values(?, ?, ?, ?, ?, ?, ?)", [produto, url, foto, preco, genero, "#{Time.now}", "#{Time.now}"])
+        @db.execute("insert into produtos (nome, link, foto, preco, genero, tamanho, created_at, updated_at) values(?, ?, ?, ?, ?, ?, ?, ?)", [produto, url, foto, preco, genero, tamanho, "#{Time.now}", "#{Time.now}"])
       rescue SQLite3::ConstraintException => e
         puts "[insert] #{e}"
       end
     end
     
-    def save_produtos(produto, url, foto, preco, genero)
+    def save_produtos(produto, url, foto, preco, genero, tamanho)
       begin
         if foto && foto != ""
-          @db.execute("insert into produtos (nome, link, foto, preco, genero, created_at, updated_at) values(?, ?, ?, ?, ?, ?, ?)", [produto, url, foto, preco, genero, "#{Time.now}", "#{Time.now}"])
+          @db.execute("insert into produtos (nome, link, foto, preco, genero, tamanho, created_at, updated_at) values(?, ?, ?, ?, ?, ?, ?, ?)", [produto, url, foto, preco, genero, tamanho, "#{Time.now}", "#{Time.now}"])
         else
           puts "[save_produtos] error ======================================#{url}===================================================================================================================="
         end

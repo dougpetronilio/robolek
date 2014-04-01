@@ -4,9 +4,9 @@ require 'nokogiri'
 module RoboLek
   class TrataLink
     
-    attr_reader :code, :body, :links, :pagina, :url, :base_produtos, :produtos, :robots, :base_preco, :base_foto, :base_genero, :base_nome
+    attr_reader :code, :body, :links, :pagina, :url, :base_produtos, :produtos, :robots, :base_preco, :base_foto, :base_genero, :base_nome, :base_tamanho
     
-    def initialize(link, robots, base_produtos, base_preco, base_foto, base_genero, base_nome)
+    def initialize(link, robots, base_produtos, base_preco, base_foto, base_genero, base_nome, base_tamanho)
       @url = link
       @code = ""
       @body = ""
@@ -17,13 +17,14 @@ module RoboLek
       @base_foto = base_foto
       @base_genero = base_genero
       @base_nome = base_nome
+      @base_tamanho = base_tamanho
       @robots = robots
       extrai_links(link)
       @pagina = Pagina.new(@url, @code, @body, @links, @base_produtos, @produtos)
     end
     
-    def self.trata_pagina(link, robots, produtos = "", base_preco = "", base_foto = "", base_genero = "", base_nome = "")
-      self.new(link, robots, produtos, base_preco, base_foto, base_genero, base_nome)
+    def self.trata_pagina(link, robots, produtos = "", base_preco = "", base_foto = "", base_genero = "", base_nome = "", base_tamanho = "")
+      self.new(link, robots, produtos, base_preco, base_foto, base_genero, base_nome, base_tamanho)
     end
     
     private

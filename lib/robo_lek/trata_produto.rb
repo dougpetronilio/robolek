@@ -5,24 +5,26 @@ require 'nokogiri'
 module RoboLek
   class TrataProduto
     
-    attr_reader :nome, :url, :foto, :preco, :genero, :code, :body
+    attr_reader :nome, :url, :foto, :preco, :genero, :tamanho, :code, :body
     
-    def initialize(link, base_preco, base_foto, base_genero, base_nome)
+    def initialize(link, base_preco, base_foto, base_genero, base_nome, base_tamanho)
       @url = link
       @base_preco = base_preco
       @base_foto = base_foto
       @base_genero = base_genero
       @base_nome = base_nome
+      @base_tamanho = base_tamanho
       @nome = ""
       @foto = ""
       @preco = ""
       @genero = ""
+      @tamanho = ""
       @code = ""
       extrai_links(@url)
     end
     
-    def self.trata_produto(link, base_preco = "", base_foto = "", base_genero = "", base_nome = "")
-      self.new(link, base_preco, base_foto, base_genero, base_nome)
+    def self.trata_produto(link, base_preco = "", base_foto = "", base_genero = "", base_nome = "", base_tamanho = "")
+      self.new(link, base_preco, base_foto, base_genero, base_nome, base_tamanho)
     end
     
     private
@@ -39,6 +41,7 @@ module RoboLek
           @preco = pega_preco
           @foto = pega_foto
           @genero = pega_genero
+          @tamanho = pega_tamanho
         when (300..307)
           #puts "#"*50
           #puts "[trata_produto][extrai_links] 1++++ @url = #{@url}"
@@ -55,6 +58,7 @@ module RoboLek
               @preco = pega_preco
               @foto = pega_foto
               @genero = pega_genero
+              @tamanho = pega_tamanho
             end
           end
         when (400..417)
@@ -69,12 +73,29 @@ module RoboLek
       #puts "[pega_preco] base_preco = #{@base_preco}"
       if @base_preco != ""
         @preco = doc.at_css(@base_preco).text if doc && doc.at_css(@base_preco)
+        
+        @preco = @preco.gsub("R$", "")
+        @preco = @preco.gsub(" ", "")
+
         #puts "[pega_preco] preco = #{@preco}"
       else
         #puts "[pega_preco] @base_preco = nil"
         @preco = nil
       end
       @preco
+    end
+    
+    def pega_tamanho
+      #puts "[pega_tamanho] base_tamanho = #{@base_tamanho}"
+      if @base_tamanho != ""
+        @tamanho = doc.at_css(@base_tamanho).text if doc && doc.at_css(@base_tamanho)
+
+        #puts "[pega_tamanho] tamanho = #{@tamanho}"
+      else
+        #puts "[pega_tamanho] @base_tamanho = nil"
+        @tamanho = nil
+      end
+      @tamanho
     end
     
     def pega_foto

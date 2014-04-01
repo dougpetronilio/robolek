@@ -16,9 +16,9 @@ module RoboLek
           break if link == :FIM
 
           if produto
-            @pages << TrataLink.trata_pagina(link['url'], link['robots'] , produto, link['base_preco'], link['base_foto'], link['base_genero'], link['base_nome'])
+            @pages << TrataLink.trata_pagina(link['url'], link['robots'] , produto, link['base_preco'], link['base_foto'], link['base_genero'], link['base_nome'], link['base_tamanho'])
           else
-            @pages << TrataLink.trata_pagina(link['url'], link['robots'], "", link['base_preco'], link['base_foto'], link['base_genero'], link['base_nome'])
+            @pages << TrataLink.trata_pagina(link['url'], link['robots'], "", link['base_preco'], link['base_foto'], link['base_genero'], link['base_nome'], link['base_tamanho'])
           end
         else
           produto = @queue.pop
@@ -26,7 +26,7 @@ module RoboLek
           
           break if produto == :FIM
           
-          @pages << TrataProduto.trata_produto(produto['url'], produto['base_preco'], produto['base_foto'], produto['base_genero'], produto['base_nome'])
+          @pages << TrataProduto.trata_produto(produto['url'], produto['base_preco'], produto['base_foto'], produto['base_genero'], produto['base_nome'], produto['base_tamanho'])
         end
       end
     end
