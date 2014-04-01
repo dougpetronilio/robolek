@@ -93,7 +93,7 @@ module RoboLek
         #puts "[pega_tamanho] tamanho = #{@tamanho}"
       else
         #puts "[pega_tamanho] @base_tamanho = nil"
-        @tamanho = ""
+        @tamanho = nil
       end
       @tamanho
     end

@@ -31,6 +31,7 @@ module RoboLek
            begin
              @db.prepare("insert_values", "insert into produtos (nome, link, foto, preco, genero, tamanho, created_at, updated_at) values($1, $2, $3, $4, $5, $6, $7, $8)")
            rescue PG::Error => e
+             puts "[save_produtos] PG::Error #{e} -- [#{url}]"
              @db.exec("DEALLOCATE insert_values")
              @db.prepare("insert_values", "insert into produtos (nome, link, foto, preco, genero, tamanho, created_at, updated_at) values($1, $2, $3, $4, $5, $6, $7, $8)")
            end
