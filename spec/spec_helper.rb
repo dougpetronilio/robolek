@@ -5,6 +5,7 @@ require "webmock/rspec"
 $:.unshift(File.dirname(__FILE__) + '/../lib/')
 require File.dirname(__FILE__) + '/stub_page_helper'
 
+
 RSpec.configure do |config|
   config.treat_symbols_as_metadata_keys_with_true_values = true
   config.run_all_when_everything_filtered = true
@@ -15,5 +16,7 @@ end
 
 SimpleCov.formatter = SimpleCov::Formatter::HTMLFormatter
 SimpleCov.start
+
+
 
 DOMINIO = 'http://www.example.com/'

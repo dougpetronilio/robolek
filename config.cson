@@ -1,0 +1,2 @@
+'test-status':
+  'spec/**/*_spec.rb': 'rake spec'
