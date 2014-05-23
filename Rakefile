@@ -5,8 +5,8 @@ Bundler.require
 
 desc "Default run spec"
 task :default => :spec
-desc "Default run cucumber"
-task :default => :cucumber
+#desc "Default run cucumber"
+#task :default => :cucumber
 
 
 desc "Run spec"
