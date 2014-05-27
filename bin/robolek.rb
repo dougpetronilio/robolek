@@ -1,12 +1,12 @@
 #!/usr/bin/env ruby
 
-$:.unshift File.join(File.dirname(__FILE__), "..", "lib") 
+$:.unshift File.join(File.dirname(__FILE__), "..", "lib")
 
 require "robo_lek"
 require "benchmark"
 
-robolek = RoboLek.start(db = RoboLek.DBMongo(nil, "robolek", "mongodb://heroku:robo2013lek@paulo.mongohq.com:10076/app19255853"), db_sql = RoboLek.DBPostgres)
-#robolek = RoboLek.start
+#robolek = RoboLek.start(db = RoboLek.DBMongo(nil, "robolek", "mongodb://heroku:robo2013lek@paulo.mongohq.com:10076/app19255853"), db_sql = RoboLek.DBPostgres)
+robolek = RoboLek.start
 
 #robolek.clean_db
 
@@ -32,7 +32,7 @@ Benchmark.bm do |x|
       contador += 1
     end
   end
-  
+
 end
 
 robolek.close_db
